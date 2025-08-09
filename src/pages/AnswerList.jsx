@@ -1,3 +1,4 @@
+import CardList from "../components/AnswerList/CardList";
 import Header from "../components/AnswerList/Header";
 import Select from "../components/AnswerList/Select";
 import Title from "../components/AnswerList/Title";
@@ -9,6 +10,7 @@ export default function AnswerList() {
         <Header />  
         <Title>누구에게 질문할까요?</Title>
         <Select />
+        <CardList />
       </div>
     </div>
   )
