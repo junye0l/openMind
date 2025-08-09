@@ -1,4 +1,5 @@
 import Header from "../components/AnswerList/Header";
+import Select from "../components/AnswerList/Select";
 import Title from "../components/AnswerList/Title";
 
 export default function AnswerList() {
@@ -7,6 +8,7 @@ export default function AnswerList() {
       <div className="w-[940px] mx-auto my-0">
         <Header />  
         <Title>누구에게 질문할까요?</Title>
+        <Select />
       </div>
     </div>
   )
