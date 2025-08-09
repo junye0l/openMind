@@ -8,7 +8,7 @@ export default function Header() {
       <Link to="/">
         <LogoImg />
       </Link>
-      <Link>
+      <Link to="/list/1">
         <Button>답변하러 가기</Button>
       </Link>
     </header>
