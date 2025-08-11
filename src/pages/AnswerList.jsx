@@ -9,18 +9,20 @@ import { getsubjects } from '../hooks/getsubjects';
 export default function AnswerList() {
   const [order, setOrder] = useState('name');
   const [items, setItems] = useState([]);
-  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currenPages, setCurrentPages] = useState(1);
 
   useEffect(() => {
     const handleLoad = async () => {
-      const { results } = await getsubjects({
+      const { results, totalPages } = await getsubjects({
         limit: 8,
-        page,
+        page : currenPages,
       });
       setItems(results);
+      setTotalPages(totalPages);
     };
     handleLoad();
-  }, [page]);
+  }, [currenPages]);
 
   const sortedItem = [...items].sort((a, b) => {
     if (order === 'name') {
@@ -44,7 +46,7 @@ export default function AnswerList() {
         <Title>누구에게 질문할까요?</Title>
         <Select handleNew={handleNew} handleName={handleName} />
         <CardList items={sortedItem} />
-        <Pagination page={page} setPage={setPage} />
+        <Pagination currenPages={currenPages} setCurrentPages={setCurrentPages} totalPages={totalPages} />
       </div>
     </div>
   );

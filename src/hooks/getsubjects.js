@@ -1,6 +1,6 @@
 const BASEURL = 'https://openmind-api.vercel.app';
 
-export async function getsubjects({ limit, page, team = '18-1'}) {
+export async function getsubjects({ limit, page, team = '18-1' }) {
   try {
     const offset = (page - 1) * limit;
     const response = await fetch(
@@ -10,7 +10,7 @@ export async function getsubjects({ limit, page, team = '18-1'}) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const body = await response.json();
-    return body;
+    return { results : body.results, totalPages: Math.ceil(body.count / limit) };
   } catch (error) {
     console.error('Fetch error:', error);
     throw error;
