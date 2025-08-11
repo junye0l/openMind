@@ -1,9 +1,8 @@
-import React from 'react';
 import profileImg from '../../assets/images/profile_img.svg';
 import logo from '../../assets/images/logo.svg';
-import linkImg from '../../assets/images/Link.svg';
-import kakaoImg from '../../assets/images/Kakaotalk.svg';
-import facebookImg from '../../assets/images/Facebook.svg';
+import LinkImg from '../../assets/images/Link.svg?react';
+import KakaoImg from '../../assets/images/Kakaotalk.svg?react';
+import FacebookImg from '../../assets/images/Facebook.svg?react';
 
 function ProfileSection() {
   return (
@@ -13,13 +12,13 @@ function ProfileSection() {
       <p>아초는고양이</p>
       <div className="flex gap-[12px]">
         <div className="p-[11px] bg-[#542f1a] flex justify-center items-center rounded-full">
-          <img className="stroke-white" src={linkImg} alt="프로필 링크" />
+          <LinkImg className=" fill-[#ffffff]" />
         </div>
         <div className="p-[11px] bg-[#fee500] flex justify-center items-center rounded-full">
-          <img src={kakaoImg} alt="카카오톡 링크" />
+          <KakaoImg />
         </div>
         <div className="p-[11px] bg-[#1877f2] flex justify-center items-center rounded-full">
-          <img src={facebookImg} alt="페이스북 링크" />
+          <FacebookImg className="fill-[#ffffff]" />
         </div>
       </div>
     </section>
