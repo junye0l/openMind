@@ -30,5 +30,18 @@
     "prettier": "^3.6.2",
     "vite": "^7.1.0",
     "vite-plugin-svgr": "^4.3.0"
-  }
+  },
+  "description": "��#\u0000 \u0000J\u0000e\u0000o\u0000n\u0000g\u0000C\u0000h\u0000a\u0000n\u0000M\u0000i\u0000n\u0000 \u0000B\u0000r\u0000a\u0000n\u0000c\u0000h\u0000\r\u0000 \u0000",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/junye0l/openMind.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/junye0l/openMind/issues"
+  },
+  "homepage": "https://github.com/junye0l/openMind#readme"
 }
