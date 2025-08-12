@@ -5,7 +5,7 @@ import FloatingButton from '../components/question/FloatingButton';
 
 function AnswerQuestion() {
   return (
-    <div className="relative bg-[#F9F9F9] flex flex-col items-center">
+    <div className="relative bg-gs-20 flex flex-col items-center">
       <Headers />
 
       <QuestionFeedList />

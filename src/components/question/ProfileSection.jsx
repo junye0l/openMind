@@ -11,14 +11,14 @@ function ProfileSection() {
       <img className="w-[136px]" src={profileImg} alt="" />
       <p className="text-[32px] ">아초는고양이</p>
       <div className="flex gap-[12px]">
-        <div className="p-[11px] bg-[#542f1a] flex justify-center items-center rounded-full">
-          <LinkImg className="fill-[#ffffff]" />
+        <div className="p-[11px] bg-bn-40 flex justify-center items-center rounded-full">
+          <LinkImg className="fill-gs-10" />
         </div>
-        <div className="p-[11px] bg-[#fee500] flex justify-center items-center rounded-full">
-          <KakaoImg className="fill-[#000000]" />
+        <div className="p-[11px] bg-y50 flex justify-center items-center rounded-full">
+          <KakaoImg className="fill-gs-60" />
         </div>
-        <div className="p-[11px] bg-[#1877f2] flex justify-center items-center rounded-full">
-          <FacebookImg className="fill-[#ffffff]" />
+        <div className="p-[11px] bg-b50 flex justify-center items-center rounded-full">
+          <FacebookImg className="fill-gs-10" />
         </div>
       </div>
     </section>
