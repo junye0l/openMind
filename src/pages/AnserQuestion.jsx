@@ -1,7 +1,18 @@
-import React from 'react'
+// import { useState } from 'react';
+import QuestionFeedList from '../components/question/QuestionFeedList';
+import Headers from '../components/question/Headers';
+import FloatingButton from '../components/question/FloatingButton';
 
-export default function 개별피드페이지() {
+function AnswerQuestion() {
   return (
-    <div>개별피드페이지</div>
-  )
+    <div className="relative bg-gs-20 flex flex-col items-center">
+      <Headers />
+
+      <QuestionFeedList />
+
+      <FloatingButton />
+    </div>
+  );
 }
+
+export default AnswerQuestion;
