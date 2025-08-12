@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import profileImg from '../assets/images/profile_img.svg';
+import { API_BASE } from '';
 
 // 1. 모달 표시/닫기 동작
 // 2. 질문 입력 & 버튼 활성화 로직
 // 3. API 연동
-
-// 실습용 API 주소
-const API_BASE = 'https://openmind-api.vercel.app/18-1';
 
 export default function QuestionModal({ subjectId = null, onSent = () => {} }) {
   // 1) 모달을 열고 닫는 상태 (처음엔 닫혀 있음)
@@ -75,72 +74,79 @@ export default function QuestionModal({ subjectId = null, onSent = () => {} }) {
   // 버튼 활성 여부 (공백만 있으면 비활성)
   const canSend = question.trim().length > 0 && !loading;
 
-  // 아주 기본적인 스타일 (디자인은 나중)
-  const overlay = {
-    position: 'fixed',
-    inset: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(0,0,0,0.4)',
-  };
-  const box = {
-    background: '#fff',
-    padding: 20,
-    borderRadius: 8,
-    width: '90%',
-    maxWidth: 520,
-  };
-  const textareaStyle = { width: '100%', minHeight: 120, padding: 8 };
-
   return (
     <>
       {/* 모달 여는 버튼 */}
       <button onClick={() => setIsModalOpen(true)}>질문 작성하기</button>
 
-      {/* 모달 (isModalOpen이 true일 때만 화면에 보임) */}
+      {/* 모달 영역 (isModalOpen이 true일 때만 렌더링) */}
       {isModalOpen && (
-        <div style={overlay} onClick={() => setIsModalOpen(false)}>
-          {/* 모달 박스 안을 클릭하면 바깥 클릭 이벤트가 전파되는 걸 막음 (모달이 안 닫히게) */}
-          <div style={box} onClick={e => e.stopPropagation()}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <h3 style={{ margin: 0 }}>질문 작성</h3>
-              <button onClick={() => setIsModalOpen(false)}>X</button>
+        // 배경 오버레이
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/65"
+          onClick={() => setIsModalOpen(false)} // 배경 클릭 시 모달 닫기
+        >
+          {/* 모달 박스 */}
+          <div
+            className="w-[92%] max-w-[640px] rounded-2xl bg-white p-6 shadow-[0_12px_30px_rgba(0,0,0,0.25)]"
+            onClick={e => e.stopPropagation()} // 모달 내부 클릭 시 닫힘 방지
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="q-title"
+          >
+            {/* 헤더: 제목 + 닫기 버튼 */}
+            <div className="mb-3 flex items-center justify-between">
+              {/* 제목 왼쪽에 말풍선 아이콘 */}
+              <div className="flex items-center gap-2 text-gray-900">
+                <span className="text-[18px]" aria-hidden>
+                  💬
+                </span>
+                <h1 id="q-title" className="py-3 m-0 text-[21px] font-bold">
+                  질문을 작성하세요
+                </h1>
+              </div>
+              {/* 닫기(X) 버튼 */}
+              <button
+                aria-label="모달 닫기"
+                onClick={() => setIsModalOpen(false)}
+                className="-mt-3 text-[40px] leading-none text-gray-900 hover:text-gray-600"
+              >
+                ×
+              </button>
             </div>
 
-            <div style={{ marginTop: 12 }}>
+            {/* To. 라인: 대상 이름과 아바타 */}
+            <div className="mb-3 flex items-center gap-2 text-[14px] text-gray-900">
+              <span className="font-bold">To.</span>
+              <img
+                src={profileImg}
+                alt=""
+                className="h-[30px] w-[30px] rounded-full object-cover"
+              />
+              <span className="font-large">아초는고양이</span>
+            </div>
+
+            {/* 입력창: 연회색 배경, 옅은 테두리, 포커스 시 파란 외곽선 */}
+            <div className="mb-4">
               <textarea
                 ref={textareaRef}
-                placeholder="질문을 작성하세요"
+                placeholder="질문을 입력해주세요"
                 value={question}
                 onChange={e => setQuestion(e.target.value)}
-                style={textareaStyle}
+                className="min-h-[150px] w-full resize-y rounded-xl border border-gray-200 bg-[#fafafa] p-3 text-sm text-gray-900 outline-blue-600 placeholder:text-gray-400"
               />
             </div>
 
-            <div style={{ marginTop: 12, textAlign: 'right' }}>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                style={{ marginRight: 8 }}
-              >
-                취소
-              </button>
+            {/* 전송 버튼 */}
+            <div>
               <button
                 onClick={handleSend}
                 disabled={!canSend}
-                style={{
-                  background: canSend ? '#2563EB' : '#9CA3AF',
-                  color: 'white',
-                  padding: '6px 12px',
-                  border: 'none',
-                  cursor: canSend ? 'pointer' : 'default',
-                }}
+                className={`h-12 w-full rounded-xl font-bold text-white transition ${
+                  canSend
+                    ? 'bg-[#6B4A2D] hover:brightness-110'
+                    : 'cursor-not-allowed bg-[#D6CCC6]'
+                }`}
               >
                 {loading ? '전송 중...' : '질문 보내기'}
               </button>
