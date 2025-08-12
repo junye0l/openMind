@@ -5,11 +5,11 @@ import FloatingButton from '../components/question/FloatingButton';
 
 function AnswerQuestion() {
   return (
-    <div className="relative flex flex-col items-center">
+    <div className="relative bg-[#F9F9F9] flex flex-col items-center">
       <Headers />
-      <main className="flex flex-col justify-center items-center rounded-[16px] w-[716px] mt-[189px] bg-[#C7bbb5]">
-        <QuestionFeedList />
-      </main>
+
+      <QuestionFeedList />
+
       <FloatingButton />
     </div>
   );

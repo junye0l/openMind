@@ -9,7 +9,7 @@ function ProfileSection() {
     <section className="absolute top-[50px] flex justify-center flex-col items-center gap-[12px]">
       <img className="" src={logo} alt="로고 이미지" />
       <img className="w-[136px]" src={profileImg} alt="" />
-      <p>아초는고양이</p>
+      <p className="text-[32px] ">아초는고양이</p>
       <div className="flex gap-[12px]">
         <div className="p-[11px] bg-[#542f1a] flex justify-center items-center rounded-full">
           <LinkImg className=" fill-[#ffffff]" />
