@@ -12,10 +12,10 @@ function ProfileSection() {
       <p className="text-[32px] ">아초는고양이</p>
       <div className="flex gap-[12px]">
         <div className="p-[11px] bg-[#542f1a] flex justify-center items-center rounded-full">
-          <LinkImg className=" fill-[#ffffff]" />
+          <LinkImg className="fill-[#ffffff]" />
         </div>
         <div className="p-[11px] bg-[#fee500] flex justify-center items-center rounded-full">
-          <KakaoImg />
+          <KakaoImg className="fill-[#000000]" />
         </div>
         <div className="p-[11px] bg-[#1877f2] flex justify-center items-center rounded-full">
           <FacebookImg className="fill-[#ffffff]" />
