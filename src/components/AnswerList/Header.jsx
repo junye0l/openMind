@@ -7,8 +7,8 @@ export default function Header() {
   const NaviPath = id ? `post/${id}/answer` : '/';
 
   return (
-    <header className='flex justify-between items-center'>
-      <Link to="/">
+    <header className='flex flex-col justify-between items-center md:flex-row'>
+      <Link to="/" className='pb-5 md:pb-0'>
         <LogoImg />
       </Link>
       <Link to={NaviPath}>

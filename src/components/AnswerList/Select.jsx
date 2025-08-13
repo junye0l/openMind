@@ -25,10 +25,10 @@ export default function Select({ handleNew, handleName }) {
   };
 
   return (
-    <div className="w-[79px]  text-center mx-auto my-0 relative">
+    <div className="w-[79px]  text-center mx-0 my-0 relative md:mx-auto">
       <button
         onClick={selectOpen}
-        className="flex items-center justify-between py-2 px-2 border border-[#000000] rounded-lg cursor-pointer bg-white"
+        className="w-full flex items-center justify-between py-2 px-2 border border-[#000000] rounded-lg cursor-pointer bg-white"
       >
         <div className="text-[14px]">{selectValue}</div>
         <img

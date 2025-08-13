@@ -20,18 +20,18 @@ export default function AnswerList() {
       } else {
         setLimit(8);
       }
-    }
+    };
 
     MediaItems();
-    window.addEventListener("resize", MediaItems);
-    return () => window.addEventListener("resize", MediaItems);
+    window.addEventListener('resize', MediaItems);
+    return () => window.addEventListener('resize', MediaItems);
   }, [limit]);
 
   useEffect(() => {
     const handleLoad = async () => {
       const { results, totalPages } = await getsubjects({
         limit,
-        page : currenPages,
+        page: currenPages,
       });
       setItems(results);
       setTotalPages(totalPages);
@@ -58,10 +58,16 @@ export default function AnswerList() {
     <div className="bg-[#f9f9f9] pt-10 pb-[97px]">
       <div className="max-w-[327px] mx-auto my-0 md:max-w-[700px] lg:max-w-[940px]">
         <Header />
-        <Title>누구에게 질문할까요?</Title>
-        <Select handleNew={handleNew} handleName={handleName} />
+        <div className='flex justify-between items-center pt-[54px] md:flex-col md:pt-0'>
+          <Title>누구에게 질문할까요?</Title>
+          <Select handleNew={handleNew} handleName={handleName} />
+        </div>
         <CardList items={sortedItem} />
-        <Pagination currenPages={currenPages} setCurrentPages={setCurrentPages} totalPages={totalPages} />
+        <Pagination
+          currenPages={currenPages}
+          setCurrentPages={setCurrentPages}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );
