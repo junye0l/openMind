@@ -12,8 +12,8 @@ function App() {
       <Routes>
         <Route path="/" element={<MainAnswer />} />
         <Route path="/list" element={<AnswerList />} />
-        <Route path="/list/1" element={<AnswerQuestion />} />
-        <Route path="/list/1/answer" element={<Answer />} />
+        <Route path="/list/:id" element={<AnswerQuestion />} />
+        <Route path="/list/:id/answer" element={<Answer />} />
         <Route path="/modal" element={<AnswerModal />} />
       </Routes>
     </BrowserRouter>

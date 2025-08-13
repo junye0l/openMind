@@ -11,18 +11,33 @@ export default function AnswerList() {
   const [items, setItems] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currenPages, setCurrentPages] = useState(1);
+  const [limit, setLimit] = useState(8);
+
+  useEffect(() => {
+    const MediaItems = () => {
+      if (window.innerWidth < 1024) {
+        setLimit(6);
+      } else {
+        setLimit(8);
+      }
+    }
+
+    MediaItems();
+    window.addEventListener("resize", MediaItems);
+    return () => window.addEventListener("resize", MediaItems);
+  }, [limit]);
 
   useEffect(() => {
     const handleLoad = async () => {
       const { results, totalPages } = await getsubjects({
-        limit: 8,
+        limit,
         page : currenPages,
       });
       setItems(results);
       setTotalPages(totalPages);
     };
     handleLoad();
-  }, [currenPages]);
+  }, [currenPages, limit]);
 
   const sortedItem = [...items].sort((a, b) => {
     if (order === 'name') {
@@ -41,7 +56,7 @@ export default function AnswerList() {
 
   return (
     <div className="bg-[#f9f9f9] pt-10 pb-[97px]">
-      <div className="w-[940px] mx-auto my-0">
+      <div className="max-w-[327px] mx-auto my-0 md:max-w-[700px] lg:max-w-[940px]">
         <Header />
         <Title>누구에게 질문할까요?</Title>
         <Select handleNew={handleNew} handleName={handleName} />

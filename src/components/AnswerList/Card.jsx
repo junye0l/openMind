@@ -1,7 +1,7 @@
 
 export default function Card({ item }) {
   return (
-    <div className="border border-[#818181] rounded-2xl w-[220px] h-[187px] px-[20px] py-[20px] bg-white">
+    <div className="border border-[#818181] rounded-2xl w-[155px] h-[168px] px-[20px] py-[20px] bg-white md:w-[220px] md:h-[187px]">
       <div>
         <img className="size-[60px] pb-3" src={item.imageSource} alt="질문카드프로필" />
       </div>
