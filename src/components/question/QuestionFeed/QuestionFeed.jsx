@@ -1,4 +1,3 @@
-import React from 'react';
 import QuestionCounter from './QuestionCounter';
 import QuestionCard from './QuestionCard';
 

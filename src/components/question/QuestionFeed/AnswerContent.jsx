@@ -1,4 +1,4 @@
-import ProfileImg from '../../assets/images/profile_img.svg?react';
+import ProfileImg from '../../../assets/images/profile_img.svg?react';
 
 function AnswerContent() {
   return (

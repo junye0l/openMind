@@ -1,4 +1,4 @@
-import QuestionFeed from './QuestionFeed';
+import QuestionFeed from './QuestionFeed/QuestionFeed';
 
 function QuestionFeedList() {
   return (

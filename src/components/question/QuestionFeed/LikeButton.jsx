@@ -1,5 +1,5 @@
-import ThumbsUp from '../../assets/images/thumbs-up.svg?react';
-import ThumbsDown from '../../assets/images/thumbs-down.svg?react';
+import ThumbsUp from '../../../assets/images/thumbs-up.svg?react';
+import ThumbsDown from '../../../assets/images/thumbs-down.svg?react';
 
 function LikeButton() {
   return (

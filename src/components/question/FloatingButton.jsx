@@ -1,5 +1,3 @@
-import React from 'react';
-
 function FloatingButton() {
   return (
     <div className="fixed bottom-[24px] right-[24px]">
