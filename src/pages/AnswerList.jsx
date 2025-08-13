@@ -10,7 +10,7 @@ export default function AnswerList() {
   const [order, setOrder] = useState('name');
   const [items, setItems] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [currenPages, setCurrentPages] = useState(1);
+  const [currentPages, setCurrentPages] = useState(1);
   const [limit, setLimit] = useState(8);
 
   useEffect(() => {
@@ -31,13 +31,13 @@ export default function AnswerList() {
     const handleLoad = async () => {
       const { results, totalPages } = await getsubjects({
         limit,
-        page: currenPages,
+        page: currentPages,
       });
       setItems(results);
       setTotalPages(totalPages);
     };
     handleLoad();
-  }, [currenPages, limit]);
+  }, [currentPages, limit]);
 
   const sortedItem = [...items].sort((a, b) => {
     if (order === 'name') {
@@ -55,7 +55,7 @@ export default function AnswerList() {
   };
 
   return (
-    <div className="bg-[#f9f9f9] pt-10 pb-[97px]">
+    <div className="bg-gs-20 pt-10 pb-[97px]">
       <div className="max-w-[327px] mx-auto my-0 md:max-w-[700px] lg:max-w-[940px]">
         <Header />
         <div className='flex justify-between items-center pt-[54px] md:flex-col md:pt-0'>
@@ -64,7 +64,7 @@ export default function AnswerList() {
         </div>
         <CardList items={sortedItem} />
         <Pagination
-          currenPages={currenPages}
+          currentPages={currentPages}
           setCurrentPages={setCurrentPages}
           totalPages={totalPages}
         />
