@@ -58,7 +58,7 @@ export default function AnswerList() {
     <div className="bg-gs-20 pt-10 pb-[97px]">
       <div className="max-w-[327px] mx-auto my-0 md:max-w-[700px] lg:max-w-[940px]">
         <Header />
-        <div className='flex justify-between items-center pt-[54px] md:flex-col md:pt-0'>
+        <div className="flex justify-between items-center pt-[54px] md:flex-col md:pt-0">
           <Title>누구에게 질문할까요?</Title>
           <Select handleNew={handleNew} handleName={handleName} />
         </div>
