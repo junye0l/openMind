@@ -9,9 +9,16 @@ import Answerpage from './components/Answerpage/Answerpage.jsx';
 
 function App() {
   return (
-    <>
+    <BrowserRouter>
+      {/* <Routes>
+        <Route path="/" element={<MainAnswer />} />
+        <Route path="/list" element={<AnswerList />} />
+        <Route path="/list/:id" element={<AnswerQuestion />} />
+        <Route path="/list/:id/answer" element={<Answer />} />
+        <Route path="/modal" element={<AnswerModal />} />
+      </Routes> */}
       <Answerpage />;
-    </>
+    </BrowserRouter>
   );
 }
 
