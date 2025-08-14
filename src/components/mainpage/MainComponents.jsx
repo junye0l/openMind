@@ -22,7 +22,7 @@ const MainComponents = () => {
           <img
             src={logoImg}
             alt="메인로고"
-            className="mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
+            className="w-[456px] mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
           />
 
           <button className="md:hidden flex items-center gap-2 px-4 py-2 mb-6 bg-bn-10 border border-bn-40 rounded-lg hover:bg-gray-100 text-sm text-bn-40">
