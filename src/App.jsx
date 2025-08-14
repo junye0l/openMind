@@ -8,11 +8,7 @@ import AnswerModal from './pages/AnswerModal';
 import Answerpage from './components/Answerpage/Answerpage.jsx';
 
 function App() {
-  return (
-    <>
-      <Answerpage />;
-    </>
-  );
+  return <BrowserRouter></BrowserRouter>;
 }
 
 export default App;
