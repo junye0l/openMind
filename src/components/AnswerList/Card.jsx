@@ -1,7 +1,7 @@
 
 export default function Card({ item }) {
   return (
-    <div className="border border-[#818181] rounded-2xl w-[220px] h-[187px] px-[20px] py-[20px] bg-white">
+    <div className="border border-gs-40 rounded-2xl w-[155px] h-[168px] px-[20px] py-[20px] bg-white md:w-[220px] md:h-[187px]">
       <div>
         <img className="size-[60px] pb-3" src={item.imageSource} alt="질문카드프로필" />
       </div>
@@ -33,10 +33,10 @@ export default function Card({ item }) {
               fill="#818181"
             />
           </svg>
-          <p className="text-[#818181]">받은 질문</p>
+          <p className="text-gs-40">받은 질문</p>
         </div>
         <div>
-          <p className="text-[#818181]">{ item.questionCount}개</p>
+          <p className="text-gs-40">{ item.questionCount}개</p>
         </div>
       </div>
     </div>

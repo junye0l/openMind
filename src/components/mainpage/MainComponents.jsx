@@ -1,5 +1,5 @@
-import logoImg from '../../assets/images/logo.svg';
 import RightArrow from '../../assets/images/Arrow-right.svg';
+import logoImg from '../../assets/images/logo.svg';
 import MainImg from '../../assets/images/main_bg.svg';
 import UserIcon from '../../assets/images/user_icon.svg';
 
