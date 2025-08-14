@@ -4,7 +4,6 @@ import { useState } from 'react';
 import heroBg from '../../assets/images/main_bg.svg';
 import logo from '../../assets/images/logo.svg';
 import profileImg from '../../assets/images/profile_img.svg';
-
 import moreIcon from '../../assets/images/More.svg';
 import linkIcon from '../../assets/images/Link.svg';
 import KakaoIcon from '../../assets/images/Kakaotalk.svg';
@@ -12,7 +11,7 @@ import FacebookIcon from '../../assets/images/Facebook.svg';
 import thumbsUp from '../../assets/images/thumbs-up.svg';
 import thumbsDown from '../../assets/images/thumbs-down.svg';
 
-export default function Answerpage() {
+function Answerpage() {
   return (
     <div className="min-h-screen w-full bg-white">
       {/* 헤더 배경 */}
@@ -23,11 +22,10 @@ export default function Answerpage() {
         />
         {/* 중앙 정렬 스택 */}
         <div className="absolute inset-x-0 top-[50px] z-10 flex flex-col items-center gap-3">
-          {/* openmind (170x67) */}
           <div className="w-[170px] h-[67px] flex items-center justify-center">
             <img src={logo} alt="OpenMind" className="max-w-full max-h-full" />
           </div>
-          {/* 프로필 (136x136) */}
+          {/* 프로필 */}
           <div className="w-[136px] h-[136px] rounded-full overflow-hidden ring-4 ring-white shadow">
             <img
               src={profileImg}
@@ -60,6 +58,7 @@ export default function Answerpage() {
             3개의 질문이 있습니다
           </div>
 
+          {/* 추가해서 카드 개수 늘리기 */}
           <AnswerCard />
           <AnswerCard />
         </section>
@@ -167,3 +166,5 @@ function AnswerCard() {
     </article>
   );
 }
+
+export default Answerpage;
