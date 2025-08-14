@@ -1,10 +1,10 @@
 export default function Pagination({
-  currenPages,
+  currentPages: currentPages,
   totalPages,
   setCurrentPages,
 }) {
-  const BaseBtn = `text-[20px] text-[#818181] px-4 py-2`;
-  const activeBtn = `text-[20px] px-4 py-2 text-[#542F1A]`;
+  const BaseBtn = `text-[20px] text-gs-40 px-4 py-2`;
+  const activeBtn = `text-[20px] px-4 py-2 text-bn-40`;
 
   return (
     <div className="flex items-center pt-10 justify-center">
@@ -31,8 +31,8 @@ export default function Pagination({
         <button
           key={page}
           onClick={() => setCurrentPages(page)}
-          disabled={page === currenPages}
-          className={`${page === currenPages ? activeBtn : BaseBtn}`}
+          disabled={page === currentPages}
+          className={`${page === currentPages ? activeBtn : BaseBtn}`}
         >
           {page}
         </button>
