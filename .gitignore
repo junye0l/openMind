@@ -12,9 +12,6 @@ dist
 dist-ssr
 *.local
 
-# src/hooks/getsubjects.js git에 업로드 하지 않음
-getsubjects.js
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
