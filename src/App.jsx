@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<MainAnswer />} />
         <Route path="/list" element={<AnswerList />} />
         <Route path="/list/:id" element={<AnswerQuestion />} />
-        <Route path="/list/:id/answer" element={<Answer />} />
+        <Route path="/post/:id/answer" element={<Answer />} />
         <Route path="/modal" element={<AnswerModal />} />
       </Routes>
     </BrowserRouter>
