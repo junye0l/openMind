@@ -8,7 +8,7 @@ const MainComponents = () => {
     <div className="min-h-screen bg-gs-20 flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6">
         <div className="hidden md:block self-end mb-auto pr-8 md:pr-12 lg:pr-16 mt-6 md:mt-8">
-          <button className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 bg-[#F5F1EE] border border-bn-40 rounded-lg hover:bg-gray-100 text-sm md:text-base text-bn-40">
+          <button className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 bg-bn-10 border border-bn-40 rounded-lg hover:bg-gray-100 text-sm md:text-base text-bn-40">
             질문하러 가기{' '}
             <img
               src={RightArrow}
@@ -25,7 +25,7 @@ const MainComponents = () => {
             className="mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
           />
 
-          <button className="md:hidden flex items-center gap-2 px-4 py-2 mb-6 bg-[#F5F1EE] border border-bn-40 rounded-lg hover:bg-gray-100 text-sm text-bn-40">
+          <button className="md:hidden flex items-center gap-2 px-4 py-2 mb-6 bg-bn-10 border border-bn-40 rounded-lg hover:bg-gray-100 text-sm text-bn-40">
             질문하러 가기{' '}
             <img src={RightArrow} alt="오른쪽 화살표" className="w-3 h-3" />
           </button>
@@ -41,10 +41,10 @@ const MainComponents = () => {
                 <input
                   type="text"
                   placeholder="이름을 입력하세요"
-                  className="pl-10 pr-4 py-2.5 md:py-2.5 lg:py-3 border border-[#818181] rounded-lg w-full text-sm md:text-sm lg:text-base"
+                  className="pl-10 pr-4 py-2.5 md:py-2.5 lg:py-3 border border-gs-40 rounded-lg w-full text-sm md:text-sm lg:text-base"
                 />
               </div>
-              <button className="px-4 py-2.5 md:px-5 md:py-2.5 lg:px-6 lg:py-3 bg-bn-40 text-white rounded-lg w-full hover:bg-amber-800 text-sm md:text-sm lg:text-base">
+              <button className="px-4 py-2.5 md:px-5 md:py-2.5 lg:px-6 lg:py-3 bg-bn-40 text-gs-10 rounded-lg w-full hover:bg-amber-800 text-sm md:text-sm lg:text-base">
                 질문 받기
               </button>
             </div>
