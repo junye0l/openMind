@@ -6,7 +6,7 @@ function AnswerContent() {
       <ProfileImg className="w-[48px] h-[48px]" />
       <div className="flex flex-col flex-1 gap-[4px]">
         <div className="flex gap-[12px]">
-          <p className="text-[18px] font-normal">아초는고양이</p>{' '}
+          <p className="text-[18px] font-normal">아초는고양이</p>
           <p className="text-[14px] font-medium text-gs-40">2주전</p>
         </div>
         <p className="text-[16px] font-normal">

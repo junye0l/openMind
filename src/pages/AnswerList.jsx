@@ -4,7 +4,7 @@ import Header from '../components/AnswerList/Header';
 import Pagination from '../components/AnswerList/Pagination';
 import Select from '../components/AnswerList/Select';
 import Title from '../components/AnswerList/Title';
-import { getsubjects } from '../hooks/getsubjects';
+import { getsubjects } from '../api/getsubjects';
 
 export default function AnswerList() {
   const [order, setOrder] = useState('name');
