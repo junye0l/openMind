@@ -1,16 +1,10 @@
-import mainBg from '../../assets/images/main_bg.svg';
+import MainBg from '../../assets/images/main_bg.svg?react';
 import ProfileSection from './ProfileSection';
 
 function Headers() {
   return (
-    <header className="relative w-full h-full flex flex-col items-center">
-      <div className="w-full bg-gs-10">
-        <img
-          className="max-w-[1200px] h-[234px] mx-auto"
-          src={mainBg}
-          alt="배경화면"
-        />
-      </div>
+    <header className=" w-full h-full bg-gs-10 flex flex-col items-center">
+      <MainBg className="max-w-[1200px] h-[234px] bg-gs-10" />
       <ProfileSection />
     </header>
   );
