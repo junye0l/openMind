@@ -4,7 +4,7 @@ import LogoImg from './LogoImg';
 
 export default function Header() {
   const id = localStorage.getItem("id");
-  const NaviPath = id ? `post/${id}/answer` : '/';
+  const NaviPath = id ? `/post/${id}/answer` : '/';
 
   return (
     <header className='flex flex-col justify-between items-center md:flex-row'>
