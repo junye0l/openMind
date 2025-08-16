@@ -4,7 +4,6 @@ import { useState } from 'react';
 import heroBg from '../../assets/images/main_bg.svg';
 import logo from '../../assets/images/logo.svg';
 import profileImg from '../../assets/images/profile_img.svg';
-
 import moreIcon from '../../assets/images/More.svg';
 import linkIcon from '../../assets/images/Link.svg';
 import KakaoIcon from '../../assets/images/Kakaotalk.svg';
