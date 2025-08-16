@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainAnswer />} />
         <Route path="/list" element={<AnswerList />} />
-        <Route path="/list/:id" element={<AnswerQuestion />} />
+        <Route path="/subjects/:id" element={<AnswerQuestion />} />
         <Route path="/post/:id/answer" element={<Answer />} />
         <Route path="/modal" element={<AnswerModal />} />
       </Routes>
