@@ -4,7 +4,7 @@ import RightArrow from '../../assets/images/Arrow-right.svg';
 import logoImg from '../../assets/images/logo.svg';
 import MainImg from '../../assets/images/main_bg.svg';
 import UserIcon from '../../assets/images/user_icon.svg';
-import { postsubjects } from '../../hooks/getsubjects';
+import { postsubjects } from '../../api/getsubjects';
 
 const MainComponents = () => {
   const [name, setName] = useState(''); // 입력된 이름 상태

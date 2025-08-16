@@ -1,15 +1,20 @@
-import ProfileImg from '../../assets/images/profile_img.svg?react';
+import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/logo.svg?react';
 import LinkImg from '../../assets/images/Link.svg?react';
 import KakaoImg from '../../assets/images/Kakaotalk.svg?react';
 import FacebookImg from '../../assets/images/Facebook.svg?react';
 
-function ProfileSection() {
+function ProfileSection({ userInfo }) {
   return (
     <section className="absolute top-[50px] flex justify-center flex-col items-center gap-[12px]">
-      <Logo alt="로고 이미지" />
-      <ProfileImg className="w-[136px] h-[136px]" />
-      <p className="text-[32px] ">아초는고양이</p>
+      <Link to={'/list'}>
+        <Logo alt="로고 이미지" />
+      </Link>
+      <img
+        className="w-[136px] h-[136px] rounded-full"
+        src={userInfo.imageSource}
+      />
+      <p className="text-[32px] ">{userInfo.name}</p>
       <div className="flex gap-[12px]">
         <button className="p-[11px] bg-bn-40 flex justify-center items-center rounded-full">
           <LinkImg className="fill-gs-10" />
