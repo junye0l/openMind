@@ -4,28 +4,11 @@ import FloatingButton from '../components/question/FloatingButton';
 import useUserInfo from '../hook/UserInfo';
 
 function AnswerQuestion() {
-  const { userInfo, loading, error, refetch } = useUserInfo();
+  const { userInfo, loading, error } = useUserInfo();
 
-  if (loading) {
-    return (
-      <div className="loading">
-        <p>사용자 정보를 불러오는 중...</p>
-      </div>
-    );
-  }
+  if (loading) return <p>사용자 정보를 불러오는 중...</p>;
 
-  if (error) {
-    return (
-      <div className="error">
-        <p>에러: {error}</p>
-        <button onClick={refetch}>다시 시도</button>
-      </div>
-    );
-  }
-
-  if (!userInfo) {
-    return <div>사용자 정보가 없습니다.</div>;
-  }
+  if (error) return <p>에러: {error}</p>;
 
   return (
     <div className=" bg-gs-20 flex flex-col items-center">

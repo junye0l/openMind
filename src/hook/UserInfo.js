@@ -34,7 +34,6 @@ const useUserInfo = () => {
     userInfo,
     loading,
     error,
-    refetch: fetchUserInfo,
   };
 };
 

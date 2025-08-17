@@ -1,12 +1,13 @@
 import QuestionCounter from './QuestionCounter';
 import QuestionCard from './QuestionCard';
 
-function QuestionFeed({ userInfo }) {
+function QuestionFeed({ userInfo, questions }) {
   return (
     <section className="max-w-[684px]rounded-[16px] p-[16px]">
       <QuestionCounter userInfo={userInfo} />
-      {}
-      <QuestionCard />
+      {questions.map(question => (
+        <QuestionCard key={question.id} question={question} />
+      ))}
     </section>
   );
 }

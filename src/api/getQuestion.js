@@ -1,9 +1,6 @@
 import instance from './ApiAxios';
 
-export const getQuestion = async (subjectid, content) => {
-  const response = await instance.get(
-    `subjects/${subjectid}/question/`,
-    content
-  );
+export const getQuestion = async subjectid => {
+  const response = await instance.get(`subjects/${subjectid}/questions/`);
   return response.data;
 };
