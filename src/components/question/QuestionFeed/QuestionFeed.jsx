@@ -1,10 +1,11 @@
 import QuestionCounter from './QuestionCounter';
 import QuestionCard from './QuestionCard';
 
-function QuestionFeed() {
+function QuestionFeed({ userInfo }) {
   return (
     <section className="max-w-[684px]rounded-[16px] p-[16px]">
-      <QuestionCounter />
+      <QuestionCounter userInfo={userInfo} />
+      {}
       <QuestionCard />
     </section>
   );

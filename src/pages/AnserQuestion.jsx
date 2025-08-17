@@ -10,12 +10,10 @@ function AnswerQuestion() {
     return (
       <div className="loading">
         <p>사용자 정보를 불러오는 중...</p>
-        {/* 여기에 스피너 컴포넌트 추가 가능 */}
       </div>
     );
   }
 
-  // 3. 에러 발생 시 표시할 UI
   if (error) {
     return (
       <div className="error">
@@ -32,7 +30,7 @@ function AnswerQuestion() {
   return (
     <div className=" bg-gs-20 flex flex-col items-center">
       <Headers userInfo={userInfo} />
-      <QuestionFeedList />
+      <QuestionFeedList userInfo={userInfo} />
       <FloatingButton />
     </div>
   );
