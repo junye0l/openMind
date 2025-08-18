@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import profileImg from '../../assets/images/profile_img.svg';
 import { BASEURL } from '../../api/getsubjects';
 import { useParams } from 'react-router-dom'; // ✅ ADD: 라우트에서 :id를 읽어오기 위해
+import instance from '../../api/ApiAxios';
 
 // 1. 모달 표시/닫기 동작
 // 2. 질문 입력 & 버튼 활성화 로직
@@ -75,21 +76,12 @@ export default function QuestionModal({
 
     setLoading(true);
     try {
-      const url = `${BASEURL}/18-1/subjects/${finalSubjectId}/questions/`;
-      const payload = { content: body }; // ✅ 명세서대로 content만 보냄
-      console.log('[Send] fetch →', url, payload);
-
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      console.log('[Send] status', res.status);
-
-      if (!res.ok) {
-        const text = await res.text().catch(() => '서버 오류');
-        throw new Error(text || '전송 실패');
-      }
+      // axios 인스턴스(baseURL: https://openmind-api.vercel.app/18-1)
+      const res = await instance.post(
+        `/subjects/${finalSubjectId}/questions/`,
+        { content: body }
+      );
+      console.log('[Send] status', res.status); // 201 기대
 
       setQuestion('');
       setIsModalOpen(false);
