@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 
 // SVG를 React 컴포넌트로 임포트 (svgr)
-import HeroBg from '../assets/images/main_bg.svg?react';
-import Logo from '../assets/images/logo.svg?react';
-import ProfileImg from '../assets/images/profile_img.svg?react';
-import MoreIcon from '../assets/images/More.svg?react';
-import LinkIcon from '../assets/images/Link.svg?react';
-import KakaoIcon from '../assets/images/Kakaotalk.svg?react';
-import FacebookIcon from '../assets/images/Facebook.svg?react';
-import MessagesIcon from '../assets/images/Messages.svg?react';
-import AnswerNo from '../assets/images/answer_no.svg?react';
 import AnswerComplete from '../assets/images/answer_complete.svg?react';
-import EditIcon from '../assets/images/Edit.svg?react';
+import AnswerNo from '../assets/images/answer_no.svg?react';
 import CloseIcon from '../assets/images/Close.svg?react';
-import ThumbsUpIcon from '../assets/images/thumbs-up.svg?react';
+import EditIcon from '../assets/images/Edit.svg?react';
+import FacebookIcon from '../assets/images/Facebook.svg?react';
+import KakaoIcon from '../assets/images/Kakaotalk.svg?react';
+import LinkIcon from '../assets/images/Link.svg?react';
+import Logo from '../assets/images/logo.svg?react';
+import HeroBg from '../assets/images/main_bg.svg?react';
+import MessagesIcon from '../assets/images/Messages.svg?react';
+import MoreIcon from '../assets/images/More.svg?react';
+import ProfileImg from '../assets/images/profile_img.svg?react';
 import ThumbsDownIcon from '../assets/images/thumbs-down.svg?react';
+import ThumbsUpIcon from '../assets/images/thumbs-up.svg?react';
 
 export default function Answer() {
   return (

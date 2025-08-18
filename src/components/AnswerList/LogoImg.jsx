@@ -1,7 +1,7 @@
-import Logo from "../../assets/images/logo.svg"
+import Logo from "../../assets/images/logo.svg?react"
 
 export default function LogoImg() {
   return (
-    <img className="w-[146px]" src={Logo} alt="오픈마인드로고" />
+    <Logo className="w-[146px]"/>
   )
 }
