@@ -7,21 +7,21 @@ import MainImg from '../../assets/images/main_bg.svg';
 import UserIcon from '../../assets/images/user_icon.svg';
 import { postSubjectsId } from '../../api/postSubjectsId';
 
+// 로고 Float 애니메이션
+const logoFloat = {
+  y: [-8, 8, -8],
+  transition: {
+    duration: 4,
+    repeat: Infinity,
+    ease: 'easeInOut',
+  },
+};
+
 const MainComponents = () => {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
-
-  // 로고 Float 애니메이션
-  const logoFloat = {
-    y: [-8, 8, -8],
-    transition: {
-      duration: 4,
-      repeat: Infinity,
-      ease: 'easeInOut',
-    },
-  };
 
   // 질문 받기 버튼 클릭 핸들러
   const handleSubmit = async () => {
