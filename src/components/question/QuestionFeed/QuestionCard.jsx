@@ -8,7 +8,7 @@ function QuestionCard({ question }) {
     <div className=" bg-gs-10 w-[684px] rounded-[16px] p-[32px] mt-[20px] flex flex-col items-start gap-[32px]">
       <StatusBadge />
       <Question content={question.content} createdAt={question.createdAt} />
-      {question.answer && <AnswerContent answer={question.answer} />}
+      {question.answer && <AnswerContent isAnswer={question.answer} />}
       <LikeButton />
     </div>
   );

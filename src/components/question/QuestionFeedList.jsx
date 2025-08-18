@@ -1,5 +1,5 @@
 import QuestionFeed from './QuestionFeed/QuestionFeed';
-import QuestionList from '../../hook/QuestionList';
+import QuestionList from '../../hook/useQuestionList';
 
 function QuestionFeedList({ userInfo }) {
   const { questions, loading, error } = QuestionList();
