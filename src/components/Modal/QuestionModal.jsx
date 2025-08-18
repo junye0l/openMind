@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import profileImg from '../assets/images/profile_img.svg';
-import { API_BASE } from '';
+import { BASEURL } from '../../api/getsubjects';
+import { useParams } from 'react-router-dom'; // ✅ ADD: 라우트에서 :id를 읽어오기 위해
 
 // 1. 모달 표시/닫기 동작
 // 2. 질문 입력 & 버튼 활성화 로직
@@ -15,6 +16,10 @@ export default function QuestionModal({ subjectId = null, onSent = () => {} }) {
 
   // 3) 전송 중인지 알려주는 상태
   const [loading, setLoading] = useState(false);
+
+  // ✅ ADD: 라우트 파라미터에서 :id 읽기 (페이지가 /subjects/:id 라면 자동 인식)
+  const { id: routeId } = useParams();
+  const effectiveSubjectId = subjectId ?? routeId ?? null; // prop > url 순서로 우선
 
   // textarea에 포커스 주려고 ref(참조) 사용
   const textareaRef = useRef(null);
@@ -47,7 +52,7 @@ export default function QuestionModal({ subjectId = null, onSent = () => {} }) {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/subjects/${subjectId}/questions/`, {
+      const res = await fetch(`${BASEURL}/subjects/${subjectId}/questions/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: body }),
