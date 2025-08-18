@@ -1,8 +1,11 @@
-function StatusBadge() {
+function StatusBadge({ isAnswered }) {
   return (
     <>
-      <span className="px-[12px] py-[4px] text-[14px] font-medium text-gs-40 border border-solid border-gs-40 rounded-[8px]">
-        미답변
+      <span
+        className={`px-[12px] py-[4px] text-[14px] font-medium border border-solid rounded-[8px] 
+          ${isAnswered ? 'text-bn-40 border-bn-40' : 'text-gs-40 border-gs-40'}`}
+      >
+        {isAnswered ? '답변완료' : '미답변'}
       </span>
     </>
   );
