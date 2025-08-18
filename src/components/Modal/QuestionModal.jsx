@@ -91,8 +91,7 @@ export default function QuestionModal({ subjectId = null, onSent = () => {} }) {
 
   return (
     <>
-      {/* 모달 여는 버튼 */}
-      <button onClick={() => setIsModalOpen(true)}>질문 작성하기</button>
+
 
       {/* 모달 영역 (isModalOpen이 true일 때만 렌더링) */}
       {isModalOpen && (
