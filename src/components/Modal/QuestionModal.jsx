@@ -40,6 +40,16 @@ export default function QuestionModal({ subjectId = null, onSent = () => {} }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [isModalOpen]);
 
+  // ADD: 전역 이벤트로 모달 열기 (FloatingButton에서 dispatch)
+  useEffect(() => {
+    function onOpen() {
+      // e.detail?.subjectId 가 오면 우선 적용하고 싶다면 여기서 처리 가능
+      setIsModalOpen(true);
+    }
+    window.addEventListener('open-question-modal', onOpen);
+    return () => window.removeEventListener('open-question-modal', onOpen);
+  }, []);
+
   // 질문 보내기 함수
   async function handleSend() {
     const body = question.trim();
