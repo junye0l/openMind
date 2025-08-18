@@ -15,6 +15,7 @@ function AnswerQuestion() {
       <Headers userInfo={userInfo} />
       <QuestionFeedList userInfo={userInfo} />
       <FloatingButton />
+      <QuestionModal />
     </div>
   );
 }
