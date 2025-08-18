@@ -2,6 +2,7 @@ import QuestionFeedList from '../components/question/QuestionFeedList';
 import Headers from '../components/question/Headers';
 import FloatingButton from '../components/question/FloatingButton';
 import useUserInfo from '../hook/UserInfo';
+import QuestionModal from '../components/Modal/QuestionModal';
 
 function AnswerQuestion() {
   const { userInfo, loading, error } = useUserInfo();

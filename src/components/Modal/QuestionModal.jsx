@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import profileImg from '../../assets/images/profile_img.svg';
-import { BASEURL } from '../../api/getsubjects';
 import { useParams } from 'react-router-dom'; // ✅ ADD: 라우트에서 :id를 읽어오기 위해
 import instance from '../../api/ApiAxios';
 
