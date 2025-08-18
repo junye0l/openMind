@@ -117,7 +117,10 @@ export default function QuestionModal({
         >
           {/* 모달 박스 */}
           <div
-            className="w-[92%] max-w-[640px] rounded-2xl bg-white p-6 shadow-[0_12px_30px_rgba(0,0,0,0.25)]"
+            className="w-[92%] max-w-[640px]          
+    max-h-[85vh] overflow-auto         
+    rounded-2xl bg-white p-6
+    shadow-[0_12px_30px_rgba(0,0,0,0.25)]"
             onClick={e => e.stopPropagation()} // 모달 내부 클릭 시 닫힘 방지
             role="dialog"
             aria-modal="true"
