@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { postSubjectsId } from '../../api/postSubjectsId';
 import RightArrow from '../../assets/images/Arrow-right.svg';
 import logoImg from '../../assets/images/logo.svg';
 import MainImg from '../../assets/images/main_bg.svg';
 import UserIcon from '../../assets/images/user_icon.svg';
-import { postsubjects } from '../../api/getsubjects';
 
 const MainComponents = () => {
   const [name, setName] = useState(''); // 입력된 이름 상태
@@ -25,7 +25,7 @@ const MainComponents = () => {
 
     try {
       // 새로운 피드 생성
-      await postsubjects({ name: trimmedName });
+      await postSubjectsId({ name: trimmedName });
       navigate('/list');
     } catch (error) {
       console.error('피드 생성 실패:', error);

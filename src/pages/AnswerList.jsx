@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getsubjects } from '../api/getsubjects';
+import { getSubjects } from '../api/getSubjects';
 import CardList from '../components/AnswerList/CardList';
 import Header from '../components/AnswerList/Header';
 import Pagination from '../components/AnswerList/Pagination';
@@ -12,6 +12,7 @@ export default function AnswerList() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPages, setCurrentPages] = useState(1);
   const [limit, setLimit] = useState(8);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const MediaItems = () => {
@@ -29,12 +30,13 @@ export default function AnswerList() {
 
   useEffect(() => {
     const handleLoad = async () => {
-      const { results, totalPages } = await getsubjects({
+      const { results, totalPages } = await getSubjects({
         limit,
         page: currentPages,
       });
       setItems(results);
       setTotalPages(totalPages);
+      setLoading(true);
     };
     handleLoad();
   }, [currentPages, limit]);
@@ -62,7 +64,8 @@ export default function AnswerList() {
           <Title>누구에게 질문할까요?</Title>
           <Select handleNew={handleNew} handleName={handleName} />
         </div>
-        <CardList items={sortedItem} />
+        {loading ? <CardList items={sortedItem} /> : <div>로딩중...</div>}
+        
         <Pagination
           currentPages={currentPages}
           setCurrentPages={setCurrentPages}
