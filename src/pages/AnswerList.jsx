@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
+import { getSubjects } from '../api/getSubjects';
 import CardList from '../components/AnswerList/CardList';
 import Header from '../components/AnswerList/Header';
 import Pagination from '../components/AnswerList/Pagination';
 import Select from '../components/AnswerList/Select';
 import Title from '../components/AnswerList/Title';
-import { getsubjects } from '../api/getsubjects';
 
 export default function AnswerList() {
   const [order, setOrder] = useState('name');
@@ -12,6 +12,7 @@ export default function AnswerList() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPages, setCurrentPages] = useState(1);
   const [limit, setLimit] = useState(8);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const MediaItems = () => {
@@ -29,12 +30,13 @@ export default function AnswerList() {
 
   useEffect(() => {
     const handleLoad = async () => {
-      const { results, totalPages } = await getsubjects({
+      const { results, totalPages } = await getSubjects({
         limit,
         page: currentPages,
       });
       setItems(results);
       setTotalPages(totalPages);
+      setLoading(true);
     };
     handleLoad();
   }, [currentPages, limit]);
@@ -55,14 +57,15 @@ export default function AnswerList() {
   };
 
   return (
-    <div className="bg-gs-20 pt-10 pb-[97px]">
+    <div className="bg-gs-20 pt-10 pb-[97px] h-dvh">
       <div className="max-w-[327px] mx-auto my-0 md:max-w-[700px] lg:max-w-[940px]">
         <Header />
         <div className="flex justify-between items-center pt-[54px] md:flex-col md:pt-0">
           <Title>누구에게 질문할까요?</Title>
           <Select handleNew={handleNew} handleName={handleName} />
         </div>
-        <CardList items={sortedItem} />
+        {loading ? <CardList items={sortedItem} /> : <div>로딩중...</div>}
+        
         <Pagination
           currentPages={currentPages}
           setCurrentPages={setCurrentPages}
