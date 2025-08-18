@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-/* eslint-disable no-unused-vars */
 import { motion, AnimatePresence } from 'framer-motion';
 import RightArrow from '../../assets/images/Arrow-right.svg';
 import logoImg from '../../assets/images/logo.svg';
 import MainImg from '../../assets/images/main_bg.svg';
 import UserIcon from '../../assets/images/user_icon.svg';
-import { postsubjects } from '../../api/getsubjects';
+import { postSubjectsId } from '../../api/postSubjectsId';
 
 const MainComponents = () => {
   const [name, setName] = useState('');
@@ -36,7 +35,7 @@ const MainComponents = () => {
     setIsLoading(true);
 
     try {
-      await postsubjects({ name: trimmedName });
+      await postSubjectsId({ name: trimmedName });
       setShowSuccess(true);
 
       // 성공 애니메이션 후 페이지 이동

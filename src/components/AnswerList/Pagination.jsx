@@ -6,6 +6,15 @@ export default function Pagination({
   const BaseBtn = `text-[20px] text-gs-40 px-4 py-2`;
   const activeBtn = `text-[20px] px-4 py-2 text-bn-40`;
 
+  const groupIndex = Math.floor((currentPages - 1) / 5);
+  const startPage = groupIndex * 5 + 1;
+  const endPage = Math.min(startPage + 4, totalPages);
+
+  const pages = Array.from(
+    { length: endPage - startPage + 1 },
+    (item, i) => startPage + i
+  );
+
   return (
     <div className="flex items-center pt-10 justify-center">
       <button
@@ -27,7 +36,7 @@ export default function Pagination({
           />
         </svg>
       </button>
-      {Array.from({ length: totalPages }, (item, i) => i + 1).map(page => (
+      {pages.map(page => (
         <button
           key={page}
           onClick={() => setCurrentPages(page)}
