@@ -1,11 +1,12 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import RightArrow from '../../assets/images/Arrow-right.svg?react';
 import LogoImg from '../../assets/images/logo.svg?react';
 import MainImg from '../../assets/images/main_bg.svg?react';
 import UserIcon from '../../assets/images/user_icon.svg?react';
 import { postSubjectsId } from '../../api/postSubjectsId';
+import Button from '../AnswerList/Button';
 
 // 로고 Float 애니메이션
 const logoFloat = {
@@ -17,11 +18,16 @@ const logoFloat = {
   },
 };
 
+// 질문하러 가기 버튼 컴포넌트화 클래스
+const MainButton = 'md:px-6 md:py-3 md:text-base text-bn-40';
+const MainMobileButton = 'md:hidden mb-6';
+
 const MainComponents = () => {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
+  
 
   // 질문 받기 버튼 클릭 핸들러
   const handleSubmit = async () => {
@@ -67,45 +73,23 @@ const MainComponents = () => {
     >
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6">
         {/* 데스크톱 질문하러 가기 버튼 */}
-        <nav className="hidden md:block self-end mb-auto pr-8 md:pr-12 lg:pr-16 mt-6 md:mt-8">
-          <motion.button
-            onClick={() => navigate('/list')}
-            className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 bg-bn-10 border border-bn-40 rounded-lg hover:bg-gray-100 text-sm md:text-base text-bn-40"
-            whileHover={{
-              scale: 1.05,
-              boxShadow: '0 4px 15px rgba(84, 47, 26, 0.2)',
-            }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-          >
-            질문하러 가기 <RightArrow className="w-3 h-3 md:w-4 md:h-4" />
-          </motion.button>
-        </nav>
+        <div className="hidden md:block self-end mb-auto pr-8 md:pr-12 lg:pr-16 mt-6 md:mt-8">
+          <Button onClick={() => navigate('/list')} className={MainButton}>
+            질문하러 가기
+          </Button>
+        </div>
 
         <div className="flex flex-col items-center mt-auto mb-auto">
           {/* 로고 애니메이션 */}
           <motion.header animate={logoFloat}>
             <LogoImg
-              className="w-[456px] mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
+            className="w-[456px] mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
               aria-label="메인 로고"
-            />
+          />
           </motion.header>
 
           {/* 모바일 질문하러 가기 버튼 */}
-          <nav className="md:hidden">
-            <motion.button
-              onClick={() => navigate('/list')}
-              className="flex items-center gap-2 px-4 py-2 mb-6 bg-bn-10 border border-bn-40 rounded-lg hover:bg-gray-100 text-sm text-bn-40"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 4px 15px rgba(84, 47, 26, 0.2)',
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              질문하러 가기 <RightArrow className="w-3 h-3" />
-            </motion.button>
-          </nav>
+          <Button onClick={() => navigate('/list')} className={ MainMobileButton}>질문하러 가기</Button>
 
           {/* 입력 폼 */}
           <form
