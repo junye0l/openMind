@@ -2,13 +2,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// API
+// 백엔드 API
 import { getQuestion } from '../api/getQuestion';
 import { getSubjectsId } from '../api/getSubjectsId';
 import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
 
-// 팀 공용 헤더(배경 + 프로필)
+// 팀 공용 헤더, 자꾸 깨져서 불러와서 사용
 import Headers from '../components/question/Headers';
 
 // SVG
@@ -39,7 +39,7 @@ export default function Answer() {
   const [loading, setLoading] = useState(true);
   const [loadErr, setLoadErr] = useState('');
 
-  // 훅은 항상 호출되도록 유지, 내부 가드로 빠른 종료
+  // 유즈이펙트 항시불러오기 유지 (경고창 오류 지우기)
   useEffect(() => {
     if (!subjectId) {
       setLoading(false);
@@ -75,7 +75,7 @@ export default function Answer() {
             questionId: q.id,
             question: q.content ?? '(내용 없음)',
             createdAt: q.createdAt ? timeAgo(q.createdAt) : '방금 전',
-            author: q.authorName ?? q.author?.name ?? '익명', // 질문 작성자(표시는 안 쓰지만 데이터는 유지)
+            author: q.authorName ?? q.author?.name ?? '익명', // 질문 작성자가 추가되면 해당이름 표시하게끔
             answer: firstAnswer,
           };
         });
@@ -87,7 +87,7 @@ export default function Answer() {
         }
       } finally {
         if (!cancelled) {
-          setLoading(false); // finally 안 return 금지 → 가드로 처리
+          setLoading(false);
         }
       }
     })();
@@ -97,6 +97,7 @@ export default function Answer() {
     };
   }, [subjectId]);
 
+  //답변하기 최상단 삭제하기 버튼, 메인페이지에서 생성한 아이디 삭제
   const handleDeleteProfile = async () => {
     if (!subjectId) return;
     const ok = window.confirm('프로필을 삭제하시겠습니까?');
@@ -139,7 +140,7 @@ export default function Answer() {
             }
           />
 
-          {/* 프로필 삭제 버튼 */}
+          {/* 프로필 삭제 버튼 ui */}
           <div className="w-full flex justify-center">
             <div className="w-[716px] flex justify-end mt-[172px]">
               <button
@@ -180,7 +181,7 @@ export default function Answer() {
                   <AnswerCard
                     key={c.questionId}
                     questionId={c.questionId}
-                    // ✅ 답변자 영역을 메인 프로필로 일치
+                    // 답변자 이름, 사진을 메인에서 생성한 프로필로 동기화
                     author={userInfo?.name ?? '내 프로필'}
                     authorImage={userInfo?.imageSource ?? null}
                     question={c.question}
@@ -205,7 +206,7 @@ export default function Answer() {
 function AnswerCard({
   questionId,
   author,
-  authorImage, // ✅ 추가: 메인 프로필 이미지
+  authorImage, //메인 프로필 이미지
   question,
   createdAt,
   initialAnswer,
@@ -217,7 +218,7 @@ function AnswerCard({
   const [editText, setEditText] = useState('');
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mode, setMode] = useState('idle'); // 'idle' | 'editing' | 'confirm-delete'
+  const [mode, setMode] = useState('idle'); // 'idle' | 'editing' | confirm-delete 확인할것
   const [vote, setVote] = useState(null);
   const menuRef = useRef(null);
 
@@ -228,7 +229,7 @@ function AnswerCard({
 
   const isAnswered = !!answer;
 
-  // 바깥 클릭 닫기
+  // 외부 클릭하면 창 닫기
   useEffect(() => {
     const onClickOutside = e => {
       if (!menuRef.current) return;
@@ -253,7 +254,7 @@ function AnswerCard({
       setAnswer(created);
       setText('');
     } catch (e) {
-      setError(apiError(e) || '답변 생성 중 오류가 발생했습니다.');
+      setError(apiError(e) || '답변 생성 중 오류가 발생했습니다.'); //에러나면 멘트 띄우기
     } finally {
       setSaving(false);
     }
@@ -306,7 +307,7 @@ function AnswerCard({
 
   return (
     <article className="bg-gs-10 w-[652px] rounded-[16px] p-[32px] mt-[20px] flex flex-col items-start gap-[24px]">
-      {/* 헤더: 상태 배지 + 더보기 */}
+      {/* 헤더 상태, 더보기 */}
       <div className="w-full flex items-center">
         <span
           className={`px-[12px] py-[4px] text-[14px] font-medium border border-solid rounded-[8px] 
@@ -473,7 +474,7 @@ function AnswerCard({
           </div>
         </div>
 
-        {/* 좋아요/싫어요 */}
+        {/* 좋아요 싫어요 버튼, 이 부분은 지우고 컴포넌트 불러와서 사용해도 무방할듯*/}
         <div className="border-t-gs-30 border-t-[1px] w-full pt-[24px] flex gap-[32px] text-[14px] font-medium text-gs-40 mt-[16px]">
           <button
             className={`flex items-center gap-[6px] ${
@@ -499,6 +500,7 @@ function AnswerCard({
   );
 }
 
+//질문 올라온 시간 체크해서 표시
 function timeAgo(iso) {
   const then = new Date(iso).getTime();
   const now = Date.now();
