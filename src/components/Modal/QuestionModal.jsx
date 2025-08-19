@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import profileImg from '../../assets/images/profile_img.svg';
 import { useParams } from 'react-router-dom'; // ✅ ADD: 라우트에서 :id를 읽어오기 위해
 import instance from '../../api/ApiAxios.js';
+import { useNavigate } from 'react-router-dom';
 
 // 1. 모달 표시/닫기 동작
 // 2. 질문 입력 & 버튼 활성화 로직
@@ -9,10 +10,12 @@ import instance from '../../api/ApiAxios.js';
 
 export default function QuestionModal({
   subjectId = null,
-  onSent = () => {},
+  onSent,
   subjectName,
   subjectAvatarUrl,
 }) {
+  const navigate = useNavigate();
+
   // 1) 모달을 열고 닫는 상태 (처음엔 닫혀 있음)
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -117,7 +120,22 @@ export default function QuestionModal({
 
       setQuestion('');
       setIsModalOpen(false);
-      onSent?.();
+      // 1) 부모에서 onSent 콜백 주면 먼저 호출 (에러 나도 무시)
+      try {
+        if (typeof onSent === 'function') onSent();
+      } catch {
+        /* noop */
+      }
+
+      // 2) 그리고 확실하게 리스트가 보이도록, 아주 짧은 지연 뒤 리로드
+      //    (모달 닫힘 등 UI 업데이트가 반영된 뒤 리로드되게 함)
+      setTimeout(() => {
+        try {
+          navigate(0); // React Router v6: 현재 경로 soft reload
+        } catch {
+          window.location.reload(); // 폴백: 전체 새로고침
+        }
+      }, 0);
     } catch (err) {
       console.error('질문 전송 실패:', err);
       alert('질문 전송에 실패했어요. 잠시 후 다시 시도해주세요.');
