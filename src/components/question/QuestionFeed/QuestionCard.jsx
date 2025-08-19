@@ -15,7 +15,7 @@ function QuestionCard({ question, userInfo }) {
           createdAt={question.createdAt}
         />
       )}
-      <LikeButton />
+      <LikeButton question={question} />
     </div>
   );
 }
