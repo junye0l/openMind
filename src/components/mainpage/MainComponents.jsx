@@ -27,7 +27,6 @@ const MainComponents = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
-  
 
   // 질문 받기 버튼 클릭 핸들러
   const handleSubmit = async () => {
@@ -83,13 +82,18 @@ const MainComponents = () => {
           {/* 로고 애니메이션 */}
           <motion.header animate={logoFloat}>
             <LogoImg
-            className="w-[456px] mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
+              className="w-[456px] mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
               aria-label="메인 로고"
-          />
+            />
           </motion.header>
 
           {/* 모바일 질문하러 가기 버튼 */}
-          <Button onClick={() => navigate('/list')} className={ MainMobileButton}>질문하러 가기</Button>
+          <Button
+            onClick={() => navigate('/list')}
+            className={MainMobileButton}
+          >
+            질문하러 가기
+          </Button>
 
           {/* 입력 폼 */}
           <form
