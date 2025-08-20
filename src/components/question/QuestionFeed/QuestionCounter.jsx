@@ -2,7 +2,7 @@ import Messages from '../../../assets/images/messages.svg?react';
 
 function QuestionCounter({ userInfo }) {
   return (
-    <div className="flex items-center justify-center gap-[8px] mb-[16px]">
+    <div className="flex items-center justify-center gap-[8px]">
       <Messages className="fill-bn-40" />
       {userInfo.questionCount === 0 ? (
         <h2 className="text-[20px] font-[400] text-bn-40">

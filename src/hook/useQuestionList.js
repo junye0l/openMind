@@ -13,19 +13,19 @@ function QuestionList() {
     try {
       setLoading(true);
       setError(null);
-      // console.log('API 호출 시작');
+      console.log('API 호출 시작');
       const data = await getQuestion(id);
       console.log(data);
       console.log(data.results);
       setQuestions(data.results || []);
-      // console.log('API 호출 성공, 데이터: ', questions);
+      console.log('API 호출 성공, 데이터: ', questions);
     } catch (err) {
-      // console.error('실패', err);
+      console.error('실패', err);
       setError(err.message);
       setQuestions(null);
     } finally {
       setLoading(false);
-      // console.log('호출 완료');
+      console.log('호출 완료');
     }
   };
 
