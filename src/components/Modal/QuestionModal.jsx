@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import profileImg from '../../assets/images/profile_img.svg';
 import { useParams } from 'react-router-dom'; // ✅ ADD: 라우트에서 :id를 읽어오기 위해
-import instance from '../../api/ApiAxios';
+import instance from '../../api/ApiAxios.js';
+import { useNavigate } from 'react-router-dom';
 
 // 1. 모달 표시/닫기 동작
 // 2. 질문 입력 & 버튼 활성화 로직
@@ -9,10 +10,12 @@ import instance from '../../api/ApiAxios';
 
 export default function QuestionModal({
   subjectId = null,
-  onSent = () => {},
+  onSent,
   subjectName,
   subjectAvatarUrl,
 }) {
+  const navigate = useNavigate();
+
   // 1) 모달을 열고 닫는 상태 (처음엔 닫혀 있음)
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,9 +25,20 @@ export default function QuestionModal({
   // 3) 전송 중인지 알려주는 상태
   const [loading, setLoading] = useState(false);
 
+  // 🔧 ADD: 서버에서 가져온 대상 정보 & 로딩 상태
+  const [subjectInfo, setSubjectInfo] = useState(null); // { id, name, imageSource, ... }
+  const [subjectLoading, setSubjectLoading] = useState(false);
+
+  // 🔧 ADD: 전역 이벤트로 넘어온 subjectId 저장
+  const [eventSubjectId, setEventSubjectId] = useState(null);
+
   // ✅ ADD: 라우트 파라미터에서 :id 읽기 (페이지가 /subjects/:id 라면 자동 인식)
   const { id: routeId } = useParams();
-  const effectiveSubjectId = subjectId ?? routeId ?? null; // prop > url 순서로 우선
+
+  // 🔧 CHANGE: 우선순위 = props > 이벤트(detail) > 라우트
+  const effectiveSubjectId =
+    (subjectId ?? eventSubjectId ?? routeId ?? null) &&
+    Number(subjectId ?? eventSubjectId ?? routeId);
 
   // textarea에 포커스 주려고 ref(참조) 사용
   const textareaRef = useRef(null);
@@ -47,13 +61,35 @@ export default function QuestionModal({
 
   // ✅ ADD: 전역 이벤트로 모달 열기 (FloatingButton에서 dispatch)
   useEffect(() => {
-    function onOpen() {
-      // e.detail?.subjectId 가 오면 우선 적용하고 싶다면 여기서 처리 가능
+    function onOpen(e) {
+      // 🔧 CHANGE: FloatingButton에서 detail.subjectId 넘기면 우선 사용
+      if (e?.detail?.subjectId) setEventSubjectId(e.detail.subjectId);
       setIsModalOpen(true);
     }
     window.addEventListener('open-question-modal', onOpen);
     return () => window.removeEventListener('open-question-modal', onOpen);
   }, []);
+
+  // 🔧 ADD: 모달 열리고 id 있으면 대상 정보 GET /subjects/:id/
+  useEffect(() => {
+    if (!isModalOpen || !effectiveSubjectId) return;
+    let ignore = false;
+    (async () => {
+      try {
+        setSubjectLoading(true);
+        const res = await instance.get(`/subjects/${effectiveSubjectId}/`);
+        if (!ignore) setSubjectInfo(res.data); // { name, imageSource, ... }  ← 실제 키 확인
+      } catch (err) {
+        console.warn('대상 정보 조회 실패:', err);
+        if (!ignore) setSubjectInfo(null);
+      } finally {
+        if (!ignore) setSubjectLoading(false);
+      }
+    })();
+    return () => {
+      ignore = true;
+    };
+  }, [isModalOpen, effectiveSubjectId]);
 
   // 질문 보내기 함수
   async function handleSend() {
@@ -84,7 +120,22 @@ export default function QuestionModal({
 
       setQuestion('');
       setIsModalOpen(false);
-      onSent?.();
+      // 1) 부모에서 onSent 콜백 주면 먼저 호출 (에러 나도 무시)
+      try {
+        if (typeof onSent === 'function') onSent();
+      } catch {
+        /* noop */
+      }
+
+      // 2) 그리고 확실하게 리스트가 보이도록, 아주 짧은 지연 뒤 리로드
+      //    (모달 닫힘 등 UI 업데이트가 반영된 뒤 리로드되게 함)
+      setTimeout(() => {
+        try {
+          navigate(0); // React Router v6: 현재 경로 soft reload
+        } catch {
+          window.location.reload(); // 폴백: 전체 새로고침
+        }
+      }, 0);
     } catch (err) {
       console.error('질문 전송 실패:', err);
       alert('질문 전송에 실패했어요. 잠시 후 다시 시도해주세요.');
@@ -95,6 +146,15 @@ export default function QuestionModal({
 
   // 버튼 활성 여부 (공백만 있으면 비활성)
   const canSend = question.trim().length > 0 && !loading;
+
+  // 🔧 ADD: To. 라인 표시값 (우선순위: props > 서버데이터 > 기본값)
+  const displayName =
+    (subjectName && subjectName.trim()) ?? subjectInfo?.name ?? '대상';
+
+  const displayAvatar =
+    subjectAvatarUrl ??
+    subjectInfo?.imageSource ?? // ← 응답 키가 다르면 여기 수정
+    profileImg;
 
   return (
     <>
@@ -138,16 +198,21 @@ export default function QuestionModal({
               </button>
             </div>
 
-            {/* To. 라인: 대상 이름과 아바타 */}
+            {/* To. 라인: 대상 이름/아바타 (props > 서버데이터 > 기본값) */}
             <div className="mb-3 flex items-center gap-2 text-[14px] text-gray-900">
               <span className="font-bold">To.</span>
               <img
-                src={subjectAvatarUrl || profileImg}
+                src={displayAvatar}
                 alt=""
+                onError={e => (e.currentTarget.src = profileImg)} // 🔧 ADD: 이미지 오류시 기본이미지
                 className="h-[30px] w-[30px] rounded-full object-cover"
               />
-              +{' '}
-              <span className="font-large">{subjectName || '테스트 대상'}</span>
+              <span className="font-large">{displayName}</span>
+              {subjectLoading && (
+                <span className="ml-1 text-gray-400 text-[12px]">
+                  (불러오는 중…)
+                </span>
+              )}
             </div>
 
             {/* 입력창: 연회색 배경, 옅은 테두리, 포커스 시 파란 외곽선 */}
