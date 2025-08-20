@@ -13,10 +13,10 @@ export default function AnswerCard({
   authorImage,
   question,
   createdAt,
-  answer, // { id, content } | null
-  onCreate, // (questionId, content) => Promise<answer>
-  onEdit, // (answerId, content) => Promise<answer>
-  onDelete, // (answerId) => Promise<void>
+  answer,
+  onCreate,
+  onEdit,
+  onDelete,
 }) {
   const [mode, setMode] = useState('idle'); // idle, editing, confirm-delete
   const [vote, setVote] = useState(null); // like, dislike, null

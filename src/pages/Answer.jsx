@@ -6,11 +6,9 @@ import { getQuestion } from '../api/getQuestion';
 import { getSubjectsId } from '../api/getSubjectsId';
 import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
-
-// 팀 공용 헤더 + 카드(UI)
+// 프로필 상단 헤더,  카드UI
 import Headers from '../components/question/Headers';
 import AnswerCard from '../components/answer/AnswerCard';
-
 // n개의 질문이 있습니다 앞 아이콘
 import MessagesIcon from '../assets/images/messages.svg?react';
 
@@ -80,7 +78,7 @@ export default function AnswerPage() {
             questionId: q.id,
             question: q.content ?? '(내용 없음)',
             createdAt: q.createdAt ? timeAgo(q.createdAt) : '방금 전',
-            answer: firstAnswer, // { id, content, ... } | null
+            answer: firstAnswer, // { id, content, ... } or null
           };
         });
 
