@@ -30,20 +30,24 @@ export default function AnswerList() {
 
   useEffect(() => {
     const handleLoad = async () => {
-      const { results, totalPages } = await getSubjects({
-        limit,
-        page: currentPages,
-      });
-      setItems(results);
-      setTotalPages(totalPages);
-      setLoading(true);
+      try {
+        const { results, totalPages } = await getSubjects({
+          limit,
+          page: currentPages,
+        });
+        setItems(results);
+        setTotalPages(totalPages);
+        setLoading(true);
+      } catch (e) {
+        console.error(e);
+      }
     };
     handleLoad();
   }, [currentPages, limit]);
 
   const sortedItem = [...items].sort((a, b) => {
     if (order === 'name') {
-      return a.name.localeCompare(b.name);
+      return a.name.localeCompare(b.name, 'ko', { numeric: true })
     } else {
       return b[order] - a[order];
     }
