@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import RightArrow from '../../assets/images/Arrow-right.svg?react';
 import LogoImg from '../../assets/images/logo.svg?react';
 import MainImg from '../../assets/images/main_bg.svg?react';
@@ -27,7 +27,6 @@ const MainComponents = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
-  
 
   // 질문 받기 버튼 클릭 핸들러
   const handleSubmit = async () => {
@@ -74,22 +73,24 @@ const MainComponents = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6">
         {/* 데스크톱 질문하러 가기 버튼 */}
         <div className="hidden md:block self-end mb-auto pr-8 md:pr-12 lg:pr-16 mt-6 md:mt-8">
-          <Button onClick={() => navigate('/list')} className={MainButton}>
-            질문하러 가기
-          </Button>
+          <Link to="/list">
+            <Button className={MainButton}>질문하러 가기</Button>
+          </Link>
         </div>
 
         <div className="flex flex-col items-center mt-auto mb-auto">
           {/* 로고 애니메이션 */}
           <motion.header animate={logoFloat}>
             <LogoImg
-            className="w-[456px] mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
+              className="w-[456px] mb-6 md:mb-7 lg:mb-8 h-[100px] md:h-auto"
               aria-label="메인 로고"
-          />
+            />
           </motion.header>
 
           {/* 모바일 질문하러 가기 버튼 */}
-          <Button onClick={() => navigate('/list')} className={ MainMobileButton}>질문하러 가기</Button>
+          <Link to="/list">
+            <Button className={MainMobileButton}>질문하러 가기</Button>
+          </Link>
 
           {/* 입력 폼 */}
           <form
