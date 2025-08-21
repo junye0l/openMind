@@ -3,6 +3,7 @@ import profileImg from '../../assets/images/profile_img.svg';
 import { useParams } from 'react-router-dom'; // ✅ ADD: 라우트에서 :id를 읽어오기 위해
 import instance from '../../api/ApiAxios.js';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // 1. 모달 표시/닫기 동작
 // 2. 질문 입력 & 버튼 활성화 로직
@@ -24,6 +25,8 @@ export default function QuestionModal({
 
   // 3) 전송 중인지 알려주는 상태
   const [loading, setLoading] = useState(false);
+
+  const [showSuccess, setShowSuccess] = useState(false); // 성공 메시지 표시
 
   // 🔧 ADD: 서버에서 가져온 대상 정보 & 로딩 상태
   const [subjectInfo, setSubjectInfo] = useState(null); // { id, name, imageSource, ... }
@@ -120,22 +123,26 @@ export default function QuestionModal({
 
       setQuestion('');
       setIsModalOpen(false);
-      // 1) 부모에서 onSent 콜백 주면 먼저 호출 (에러 나도 무시)
+
+      // ✅ 1) 성공 토스트 보여주기
+      setShowSuccess(true);
+
+      // 2) 부모에서 onSent 콜백 주면 먼저 호출 (에러 나도 무시)
       try {
         if (typeof onSent === 'function') onSent();
       } catch {
         /* noop */
       }
 
-      // 2) 그리고 확실하게 리스트가 보이도록, 아주 짧은 지연 뒤 리로드
-      //    (모달 닫힘 등 UI 업데이트가 반영된 뒤 리로드되게 함)
+      // ✅ 3) 토스트가 잠깐 보인 뒤(1.2초) soft reload
       setTimeout(() => {
+        setShowSuccess(false);
         try {
           navigate(0); // React Router v6: 현재 경로 soft reload
         } catch {
           window.location.reload(); // 폴백: 전체 새로고침
         }
-      }, 0);
+      }, 1000);
     } catch (err) {
       console.error('질문 전송 실패:', err);
       alert('질문 전송에 실패했어요. 잠시 후 다시 시도해주세요.');
@@ -243,6 +250,26 @@ export default function QuestionModal({
           </div>
         </div>
       )}
+
+      {/* ✅ 성공 토스트 (하단 중앙) */}
+      <AnimatePresence>
+        {showSuccess && (
+          <div className="fixed inset-x-0 bottom-6 flex justify-center z-[60] pointer-events-none">
+            <motion.div
+              key="toast"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.25 }}
+              className="rounded-lg px-4 py-3 bg-bn-40 text-white shadow-lg pointer-events-auto"
+              role="status"
+              aria-live="polite"
+            >
+              질문이 생성되었습니다!
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
