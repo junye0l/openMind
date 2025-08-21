@@ -112,7 +112,7 @@ const MainComponents = () => {
                 }
                 transition={{ duration: 0.2 }}
               >
-                <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 md:w-4.5 md:h-4.5 lg:w-5 lg:h-5" />
+                <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 md:w-4.5 md:h-4.5 lg:w-5 lg:h-5 fill-gs-40" />
                 <input
                   type="text"
                   id="user-name"
