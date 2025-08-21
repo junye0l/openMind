@@ -1,19 +1,13 @@
-//8.20 모달작업 dev 머지파일 pull
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// 백엔드 API
 import { getQuestion } from '../api/getQuestion';
 import { getSubjectsId } from '../api/getSubjectsId';
 import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
-// 프로필 상단 헤더,  카드UI
 import Headers from '../components/question/Headers';
 import AnswerCard from '../components/answer/AnswerCard';
-// n개의 질문이 있습니다 앞 아이콘
 import MessagesIcon from '../assets/images/messages.svg?react';
 
-// 공통 에러 문자열
 const apiError = e =>
   e?.response?.data?.detail ||
   e?.response?.data?.message ||
@@ -21,7 +15,6 @@ const apiError = e =>
   e?.message ||
   '알 수 없는 오류가 발생했습니다.';
 
-// 상대 시간 포맷터
 function timeAgo(iso) {
   const then = new Date(iso).getTime();
   const now = Date.now();
@@ -45,19 +38,16 @@ export default function AnswerPage() {
   const [loading, setLoading] = useState(true);
   const [loadErr, setLoadErr] = useState('');
 
-  // 데이터 로딩 훅(프로필 + 질문목록)
   useEffect(() => {
     if (!subjectId) {
       setLoading(false);
       return;
     }
     let cancelled = false;
-
     (async () => {
       try {
         setLoading(true);
         setLoadErr('');
-
         const profile = await getSubjectsId(subjectId);
         if (cancelled) return;
         setUserInfo({
@@ -79,10 +69,11 @@ export default function AnswerPage() {
             questionId: q.id,
             question: q.content ?? '(내용 없음)',
             createdAt: q.createdAt ? timeAgo(q.createdAt) : '방금 전',
-            answer: firstAnswer, // { id, content, ... } or null
+            answer: firstAnswer,
+            like: typeof q.like === 'number' ? q.like : 0,
+            dislike: typeof q.dislike === 'number' ? q.dislike : 0,
           };
         });
-
         setCards(normalized);
       } catch (e) {
         if (!cancelled)
@@ -91,13 +82,11 @@ export default function AnswerPage() {
         if (!cancelled) setLoading(false);
       }
     })();
-
     return () => {
       cancelled = true;
     };
   }, [subjectId]);
 
-  // 프로필 삭제
   const handleDeleteProfile = async () => {
     if (!subjectId) return;
     const ok = window.confirm('프로필을 삭제하시겠습니까?');
@@ -112,7 +101,6 @@ export default function AnswerPage() {
     }
   };
 
-  // 카드에서 사용할 CRUD 콜백들 (부모가 API + 상태 갱신)
   const onCreateAnswer = async (questionId, content) => {
     try {
       const created = await createAnswer(questionId, {
@@ -156,7 +144,7 @@ export default function AnswerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gs-20 flex flex-col items-center">
+    <div className="min-h-screen bg-gs-20 flex flex-col items-center overflow-x-hidden">
       {!subjectId ? (
         <div className="min-h-screen flex items-center justify-center bg-gs-20 w-full">
           <div className="bg-white rounded-xl p-8 shadow text-center">
@@ -183,8 +171,8 @@ export default function AnswerPage() {
           />
 
           {/* 프로필 삭제 버튼 */}
-          <div className="w-full flex justify-center">
-            <div className="w-[716px] flex justify-end mt-[172px]">
+          <div className="w-full flex justify-center px-4 md:px-0">
+            <div className="w-full max-w-[716px] flex justify-end mt-[172px]">
               <button
                 type="button"
                 onClick={handleDeleteProfile}
@@ -196,8 +184,8 @@ export default function AnswerPage() {
           </div>
 
           {/* 질문 리스트 */}
-          <main className="border-bn-30 rounded-[16px] w-[716px] mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center">
-            <section className="max-w-[684px] rounded-[16px] p-[16px] w-full">
+          <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center px-4 md:px-0">
+            <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px]">
               <div className="flex items-center justify-center gap-[8px] mb-[16px]">
                 <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
                 {loading ? (
@@ -228,7 +216,9 @@ export default function AnswerPage() {
                     authorImage={userInfo?.imageSource ?? null}
                     question={c.question}
                     createdAt={c.createdAt}
-                    answer={c.answer} // 객체 or null
+                    answer={c.answer}
+                    like={c.like}
+                    dislike={c.dislike}
                     onCreate={onCreateAnswer}
                     onEdit={onEditAnswer}
                     onDelete={onDeleteAnswer}
