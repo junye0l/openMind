@@ -1,79 +1,96 @@
-import React, { useState, useEffect, useRef } from 'react';
-import profileImg from '../../assets/images/profile_img.svg';
-import { useParams } from 'react-router-dom'; // ✅ ADD: 라우트에서 :id를 읽어오기 위해
-import instance from '../../api/ApiAxios.js';
-import { useNavigate } from 'react-router-dom';
+// src/components/Modal/QuestionModal.jsx (정리/가독성 개선 버전)
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import instance from '../../api/ApiAxios.js';
+import profileImg from '../../assets/images/profile_img.svg';
 
-// 1. 모달 표시/닫기 동작
-// 2. 질문 입력 & 버튼 활성화 로직
-// 3. API 연동
-
+/**
+ * 기능 요약
+ * 1) 모달 열림/닫힘
+ * 2) 입력값에 따라 전송 버튼 활성화
+ * 3) POST /subjects/:id/questions/ 연동
+ * 4) 성공 시 토스트 → 리스트 자동 갱신(soft reload)
+ * 5) FloatingButton → window 'open-question-modal' 이벤트로 열림
+ * 6) To. 라인: props > 서버데이터 > 기본이미지/기본이름
+ */
 export default function QuestionModal({
-  subjectId = null,
-  onSent,
-  subjectName,
-  subjectAvatarUrl,
+  subjectId = null, // 외부에서 명시적으로 넘겨주는 subjectId(최우선)
+  onSent, // 성공 후 부모 갱신 콜백(선택)
+  subjectName, // 외부에서 넘겨주는 대상 이름(선택)
+  subjectAvatarUrl, // 외부에서 넘겨주는 대상 아바타 URL(선택)
 }) {
   const navigate = useNavigate();
-
-  // 1) 모달을 열고 닫는 상태 (처음엔 닫혀 있음)
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 2) 사용자가 쓴 질문 내용 저장
-  const [question, setQuestion] = useState('');
-
-  // 3) 전송 중인지 알려주는 상태
-  const [loading, setLoading] = useState(false);
-
-  const [showSuccess, setShowSuccess] = useState(false); // 성공 메시지 표시
-
-  // 🔧 ADD: 서버에서 가져온 대상 정보 & 로딩 상태
-  const [subjectInfo, setSubjectInfo] = useState(null); // { id, name, imageSource, ... }
-  const [subjectLoading, setSubjectLoading] = useState(false);
-
-  // 🔧 ADD: 전역 이벤트로 넘어온 subjectId 저장
-  const [eventSubjectId, setEventSubjectId] = useState(null);
-
-  // ✅ ADD: 라우트 파라미터에서 :id 읽기 (페이지가 /subjects/:id 라면 자동 인식)
-  const { id: routeId } = useParams();
-
-  // 🔧 CHANGE: 우선순위 = props > 이벤트(detail) > 라우트
-  const effectiveSubjectId =
-    (subjectId ?? eventSubjectId ?? routeId ?? null) &&
-    Number(subjectId ?? eventSubjectId ?? routeId);
-
-  // textarea에 포커스 주려고 ref(참조) 사용
+  const { id: routeId } = useParams(); // /subjects/:id 라우트일 때 URL의 id
   const textareaRef = useRef(null);
 
-  // 모달 열리면 textarea에 커서 자동으로 가게
-  useEffect(() => {
-    if (isModalOpen) {
-      setTimeout(() => textareaRef.current?.focus(), 40);
-    }
-  }, [isModalOpen]);
+  // UI 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [question, setQuestion] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  // ESC 누르면 모달 닫기
+  // 대상 정보(서버) & 로딩
+  const [subjectInfo, setSubjectInfo] = useState(null); // { name, imageSource, ... } (키명은 API에 따름)
+  const [subjectLoading, setSubjectLoading] = useState(false);
+
+  // 전역 이벤트로 넘어온 subjectId
+  const [eventSubjectId, setEventSubjectId] = useState(null);
+
+  // 파생값: 실제 사용할 subjectId (우선순위: props > 전역이벤트 > 라우트)
+  const effectiveSubjectId = useMemo(() => {
+    const raw = subjectId ?? eventSubjectId ?? routeId ?? null;
+    return raw ? Number(raw) : null;
+  }, [subjectId, eventSubjectId, routeId]);
+
+  // 파생값: 버튼 활성 여부
+  const canSend = useMemo(
+    () => question.trim().length > 0 && !loading,
+    [question, loading]
+  );
+
+  // 파생값: To. 라인 표시값 (우선순위: props > 서버데이터 > 기본값)
+  const displayName = useMemo(
+    () => (subjectName && subjectName.trim()) ?? subjectInfo?.name ?? '대상',
+    [subjectName, subjectInfo?.name]
+  );
+  const displayAvatar = useMemo(
+    () => subjectAvatarUrl ?? subjectInfo?.imageSource ?? profileImg,
+    [subjectAvatarUrl, subjectInfo?.imageSource]
+  );
+
+  // 키보드 ESC로 닫기
   useEffect(() => {
-    function onKey(e) {
+    if (!isModalOpen) return;
+    const onKey = e => {
       if (e.key === 'Escape') setIsModalOpen(false);
-    }
-    if (isModalOpen) window.addEventListener('keydown', onKey);
+    };
+    window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isModalOpen]);
 
-  // ✅ ADD: 전역 이벤트로 모달 열기 (FloatingButton에서 dispatch)
+  // 모달 열리면 textarea에 포커스
   useEffect(() => {
-    function onOpen(e) {
-      // 🔧 CHANGE: FloatingButton에서 detail.subjectId 넘기면 우선 사용
+    if (isModalOpen) setTimeout(() => textareaRef.current?.focus(), 40);
+  }, [isModalOpen]);
+
+  // FloatingButton에서 모달 열기 (전역 커스텀 이벤트)
+  useEffect(() => {
+    const onOpen = e => {
       if (e?.detail?.subjectId) setEventSubjectId(e.detail.subjectId);
       setIsModalOpen(true);
-    }
+    };
     window.addEventListener('open-question-modal', onOpen);
     return () => window.removeEventListener('open-question-modal', onOpen);
   }, []);
 
-  // 🔧 ADD: 모달 열리고 id 있으면 대상 정보 GET /subjects/:id/
+  // 모달이 열려 있고 subjectId가 준비되면 대상 정보 로드
   useEffect(() => {
     if (!isModalOpen || !effectiveSubjectId) return;
     let ignore = false;
@@ -81,7 +98,7 @@ export default function QuestionModal({
       try {
         setSubjectLoading(true);
         const res = await instance.get(`/subjects/${effectiveSubjectId}/`);
-        if (!ignore) setSubjectInfo(res.data); // { name, imageSource, ... }  ← 실제 키 확인
+        if (!ignore) setSubjectInfo(res.data); // { name, imageSource, ... }
       } catch (err) {
         console.warn('대상 정보 조회 실패:', err);
         if (!ignore) setSubjectInfo(null);
@@ -94,19 +111,14 @@ export default function QuestionModal({
     };
   }, [isModalOpen, effectiveSubjectId]);
 
-  // 질문 보내기 함수
-  async function handleSend() {
+  // 전송 핸들러
+  const handleSend = useCallback(async () => {
     const body = question.trim();
-    const finalSubjectId = Number(effectiveSubjectId);
-    console.log('[Send] click', {
-      bodyLen: body.length,
-      subjectId: finalSubjectId,
-    });
     if (!body) {
       console.warn('[Send] blocked: empty content');
       return;
     }
-    if (!finalSubjectId) {
+    if (!effectiveSubjectId) {
       console.warn('[Send] blocked: missing subjectId');
       alert('어떤 주제(subject)에 질문을 붙일지 알려줘야 해요.');
       return;
@@ -114,33 +126,34 @@ export default function QuestionModal({
 
     setLoading(true);
     try {
-      // axios 인스턴스(baseURL: https://openmind-api.vercel.app/18-1)
+      // POST /subjects/:id/questions/ (axios instance baseURL: https://openmind-api.vercel.app/18-1)
       const res = await instance.post(
-        `/subjects/${finalSubjectId}/questions/`,
+        `/subjects/${effectiveSubjectId}/questions/`,
         { content: body }
       );
       console.log('[Send] status', res.status); // 201 기대
 
+      // 입력/모달 초기화
       setQuestion('');
       setIsModalOpen(false);
 
-      // ✅ 1) 성공 토스트 보여주기
+      // 성공 토스트 → 잠시 노출 후 소프트 리로드
       setShowSuccess(true);
 
-      // 2) 부모에서 onSent 콜백 주면 먼저 호출 (에러 나도 무시)
+      // 부모 콜백(onSent)이 있으면 먼저 호출 (실패해도 무시)
       try {
         if (typeof onSent === 'function') onSent();
       } catch {
         /* noop */
       }
 
-      // ✅ 3) 토스트가 잠깐 보인 뒤(1.2초) soft reload
+      // 토스트 노출 후 자동 갱신(soft reload) 보장
       setTimeout(() => {
         setShowSuccess(false);
         try {
-          navigate(0); // React Router v6: 현재 경로 soft reload
+          navigate(0);
         } catch {
-          window.location.reload(); // 폴백: 전체 새로고침
+          window.location.reload();
         }
       }, 1000);
     } catch (err) {
@@ -149,44 +162,30 @@ export default function QuestionModal({
     } finally {
       setLoading(false);
     }
-  }
-
-  // 버튼 활성 여부 (공백만 있으면 비활성)
-  const canSend = question.trim().length > 0 && !loading;
-
-  // 🔧 ADD: To. 라인 표시값 (우선순위: props > 서버데이터 > 기본값)
-  const displayName =
-    (subjectName && subjectName.trim()) ?? subjectInfo?.name ?? '대상';
-
-  const displayAvatar =
-    subjectAvatarUrl ??
-    subjectInfo?.imageSource ?? // ← 응답 키가 다르면 여기 수정
-    profileImg;
+  }, [question, effectiveSubjectId, navigate, onSent]);
 
   return (
     <>
-      {/* 이제 FloatingButton → window.dispatchEvent 로만 연다. */}
-      {/* 모달 영역 (isModalOpen이 true일 때만 렌더링) */}
+      {/* 모달: isModalOpen이 true일 때만 렌더 */}
       {isModalOpen && (
-        // 배경 오버레이
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/65"
-          onClick={() => setIsModalOpen(false)} // 배경 클릭 시 모달 닫기
+          onClick={() => setIsModalOpen(false)} // 배경 클릭 시 닫기
         >
-          {/* 모달 박스 */}
           <div
-            className="w-[92%] max-w-[640px]          
-    max-h-[85vh] overflow-auto         
-    rounded-2xl bg-white p-6
-    shadow-[0_12px_30px_rgba(0,0,0,0.25)]"
-            onClick={e => e.stopPropagation()} // 모달 내부 클릭 시 닫힘 방지
+            className="
+              w-[92%] max-w-[640px]
+              max-h-[85vh] overflow-auto
+              rounded-2xl bg-white p-6
+              shadow-[0_12px_30px_rgba(0,0,0,0.25)]
+            "
             role="dialog"
             aria-modal="true"
             aria-labelledby="q-title"
+            onClick={e => e.stopPropagation()} // 모달 내부 클릭 시 닫힘 방지
           >
-            {/* 헤더: 제목 + 닫기 버튼 */}
+            {/* 헤더 */}
             <div className="mb-3 flex items-center justify-between">
-              {/* 제목 왼쪽에 말풍선 아이콘 */}
               <div className="flex items-center gap-2 text-gray-900">
                 <span className="text-[18px]" aria-hidden>
                   💬
@@ -195,7 +194,6 @@ export default function QuestionModal({
                   질문을 작성하세요
                 </h1>
               </div>
-              {/* 닫기(X) 버튼 */}
               <button
                 aria-label="모달 닫기"
                 onClick={() => setIsModalOpen(false)}
@@ -205,13 +203,13 @@ export default function QuestionModal({
               </button>
             </div>
 
-            {/* To. 라인: 대상 이름/아바타 (props > 서버데이터 > 기본값) */}
+            {/* To. 라인: 대상 이름/아바타 */}
             <div className="mb-3 flex items-center gap-2 text-[14px] text-gray-900">
               <span className="font-bold">To.</span>
               <img
                 src={displayAvatar}
                 alt=""
-                onError={e => (e.currentTarget.src = profileImg)} // 🔧 ADD: 이미지 오류시 기본이미지
+                onError={e => (e.currentTarget.src = profileImg)} // 이미지 실패 시 기본이미지
                 className="h-[30px] w-[30px] rounded-full object-cover"
               />
               <span className="font-large">{displayName}</span>
@@ -222,7 +220,7 @@ export default function QuestionModal({
               )}
             </div>
 
-            {/* 입력창: 연회색 배경, 옅은 테두리, 포커스 시 파란 외곽선 */}
+            {/* 입력 */}
             <div className="mb-4">
               <textarea
                 ref={textareaRef}
@@ -251,7 +249,7 @@ export default function QuestionModal({
         </div>
       )}
 
-      {/* ✅ 성공 토스트 (하단 중앙) */}
+      {/* 성공 토스트 (하단 중앙) */}
       <AnimatePresence>
         {showSuccess && (
           <div className="fixed inset-x-0 bottom-6 flex justify-center z-[60] pointer-events-none">
