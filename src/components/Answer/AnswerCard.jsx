@@ -32,6 +32,12 @@ export default function AnswerCard({
 
   const isAnswered = !!answer;
 
+  // 답변 이전값 비교하기 (수정버튼 개선)
+  const originalContent = (answer?.content ?? '').trim();
+  const editedContent = editText.trim();
+  const isEditedChanged = editedContent !== originalContent;
+  const canSubmitEdit = isEditedChanged && editedContent.length > 0 && !editing;
+
   useEffect(() => {
     if (isAnswered) setEditText(answer.content ?? '');
   }, [isAnswered, answer?.content]);
@@ -61,6 +67,10 @@ export default function AnswerCard({
 
   const handlePatch = async () => {
     if (!editText.trim() || !answer?.id) return;
+    if (!isEditedChanged) {
+      setError('변경된 내용이 없습니다.');
+      return;
+    }
     try {
       setEditing(true);
       setError('');
@@ -123,6 +133,7 @@ export default function AnswerCard({
                 role="menuitem"
                 onClick={() => {
                   if (!isAnswered) return;
+                  setEditText(answer?.content ?? '');
                   setMode('editing');
                   setMenuOpen(false);
                 }}
@@ -153,7 +164,7 @@ export default function AnswerCard({
       {/* 질문 */}
       <div className="flex flex-col gap-[4px]">
         <p className="text-[14px] font-medium text-gs-40">질문 · {createdAt}</p>
-        <p className="text-[18px] font-normal">{question}</p>
+        <p className="text-[18px] font-normal break-anywhere">{question}</p>
       </div>
 
       {/* 답변 입력 */}
@@ -168,8 +179,7 @@ export default function AnswerCard({
           ) : (
             <ProfileImg className="w-10 h-10 md:w-[48px] md:h-[48px]" />
           )}
-
-          <div className="flex-1 flex flex-col gap-[8px]">
+          <div className="flex-1 flex flex-col gap-[8px] min-w-0">
             <p className="text-[18px] font-normal">{author}</p>
 
             {!isAnswered && mode !== 'editing' && (
@@ -182,7 +192,7 @@ export default function AnswerCard({
             )}
 
             {isAnswered && mode !== 'editing' && (
-              <div className="text-[16px] whitespace-pre-wrap">
+              <div className="text-[16px] whitespace-pre-wrap break-anywhere">
                 {answer.content}
               </div>
             )}
@@ -215,18 +225,27 @@ export default function AnswerCard({
                 )}
 
               {mode === 'editing' && (
-                <button
-                  type="button"
-                  onClick={handlePatch}
-                  disabled={!editText.trim() || editing}
-                  className={`w-full h-11 rounded-lg flex items-center justify-center text-[14px] font-semibold ${
-                    editText.trim() && !editing
-                      ? 'bg-bn-40 text-gs-10'
-                      : 'bg-bn-30 text-gs-10/80 cursor-not-allowed'
-                  }`}
-                >
-                  {editing ? '수정 중…' : '수정 완료'}
-                </button>
+                <div className="w-full flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={handlePatch}
+                    disabled={!canSubmitEdit}
+                    className={`w-full h-11 rounded-lg flex items-center justify-center text-[14px] font-semibold ${
+                      canSubmitEdit
+                        ? 'bg-bn-40 text-gs-10'
+                        : 'bg-bn-30 text-gs-10/80 cursor-not-allowed'
+                    }`}
+                  >
+                    {editing ? '수정 중…' : '수정 완료'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMode('idle')}
+                    className="w-full h-11 rounded-lg border border-gs-30 text-[14px]"
+                  >
+                    취소
+                  </button>
+                </div>
               )}
 
               {mode === 'confirm-delete' && (
