@@ -1,41 +1,41 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getQuestion } from '../api/getQuestion';
+// import { useState, useEffect } from 'react';
+// import { useParams } from 'react-router-dom';
+// import { getQuestion } from '../api/getQuestion';
 
-function QuestionList() {
-  const { id } = useParams();
+// function QuestionCard() {
+//   const { id } = useParams();
 
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+//   const [isQuestions, setIsQuestions] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
 
-  const fetchQuestion = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log('API 호출 시작');
-      const data = await getQuestion(id);
-      console.log(data);
-      console.log(data.results);
-      setQuestions(data.results || []);
-      console.log('API 호출 성공, 데이터: ', questions);
-    } catch (err) {
-      console.error('실패', err);
-      setError(err.message);
-      setQuestions(null);
-    } finally {
-      setLoading(false);
-      console.log('호출 완료');
-    }
-  };
+//   const fetchQuestion = async () => {
+//     try {
+//       setLoading(true);
+//       setError(null);
+//       console.log('API 호출 시작');
+//       const data = await getQuestion(id);
+//       console.log(data);
+//       console.log(data.results);
+//       setIsQuestions(data.results || []);
+//       console.log('API 호출 성공, 데이터: ', isQuestions);
+//     } catch (err) {
+//       console.error('실패', err);
+//       setError(err.message);
+//       setIsQuestions(null);
+//     } finally {
+//       setLoading(false);
+//       console.log('호출 완료');
+//     }
+//   };
 
-  useEffect(() => {
-    if (id) {
-      fetchQuestion();
-    }
-  }, [id]);
+//   useEffect(() => {
+//     if (id) {
+//       fetchQuestion();
+//     }
+//   }, [id]);
 
-  return { questions, loading, error };
-}
+//   return { isQuestions, loading, error };
+// }
 
-export default QuestionList;
+// export default QuestionCard;
