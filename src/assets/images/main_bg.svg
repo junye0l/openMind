@@ -1,6 +1,6 @@
 <svg width="1200" height="234" viewBox="0 0 1200 234" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect width="1200" height="234" fill="white"/>
-<g style="mix-blend-mode:hard-light">
+<rect width="1200" height="234" fill="currentColor"/>
+<g>
 <rect width="1200" height="234" fill="url(#pattern0_1_216)"/>
 </g>
 <defs>
