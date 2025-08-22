@@ -3,8 +3,11 @@ import ProfileSection from './ProfileSection';
 
 function Headers({ userInfo }) {
   return (
-    <header className=" w-full h-[234px] relative bg-gs-10 flex flex-col items-center">
-      <img src={MainBg} className="max-w-[1200px] h-[234px]" />
+    <header className=" w-full h-[234px] mobile:h-[177px] relative bg-gs-10 flex flex-col items-center">
+      <img
+        src={MainBg}
+        className="max-w-[1200px] w-full h-full mobile:h-[177px]"
+      />
       <ProfileSection userInfo={userInfo} />
     </header>
   );

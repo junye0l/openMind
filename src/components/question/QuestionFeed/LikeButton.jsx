@@ -81,7 +81,7 @@ function LikeButton({ question }) {
     <div className=" border-t-gs-30 border-t-[1px] w-full pt-[24px] flex gap-[32px] text-[14px] font-medium">
       <button
         onClick={handlelikeClick}
-        className={`flex items-center gap-[6px] ${isLikeActive ? 'text-b50' : 'text-gs-40'}`}
+        className={`flex items-center text-[14px] font-medium gap-[6px] ${isLikeActive ? 'text-b50' : 'text-gs-40'}`}
       >
         <ThumbsUp
           className={` w-[16px] h-[16px] ${isLikeActive ? 'fill-b50' : 'fill-gs-40'}`}
@@ -91,10 +91,10 @@ function LikeButton({ question }) {
       </button>
       <button
         onClick={handleDislikeClick}
-        className={`flex items-center gap-[6px] ${isDislikeActive ? 'text-b50' : 'text-gs-40'}`}
+        className={`flex items-center text-[14px] font-medium gap-[6px] ${isDislikeActive ? 'text-gs-60' : 'text-gs-40'}`}
       >
         <ThumbsDown
-          className={` w-[16px] h-[16px] ${isDislikeActive ? 'fill-b50' : 'fill-gs-40'}`}
+          className={` w-[16px] h-[16px] ${isDislikeActive ? 'fill-gs-60' : 'fill-gs-40'}`}
         />
         <p>싫어요</p>
         <p>{dislikeCount}</p>
