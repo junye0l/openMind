@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getQuestion } from '../api/getQuestion';
 import { getSubjectsId } from '../api/getSubjectsId';
 import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
 import Headers from '../components/question/Headers';
 import AnswerCard from '../components/Answer/AnswerCard';
 import MessagesIcon from '../assets/images/messages.svg?react';
+import useInfiniteScroll from '../hook/useInfiniteScroll'; // 개별피드 무한스크롤 훅
 
 const apiError = e =>
   e?.response?.data?.detail ||
@@ -34,23 +34,29 @@ export default function AnswerPage() {
     typeof window !== 'undefined' ? localStorage.getItem('id') : null;
 
   const [userInfo, setUserInfo] = useState(null);
-  const [cards, setCards] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [loadErr, setLoadErr] = useState('');
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deletingProfile, setDeletingProfile] = useState(false);
-  const [deleteErr, setDeleteErr] = useState('');
+  // 무한스크롤 훅
+  const {
+    questionList,
+    moreNext,
+    isLoading,
+    loadMoreQuestions,
+    setQuestionList,
+  } = useInfiniteScroll(subjectId, 8);
+
+  const loadMoreRef = useRef(null);
 
   useEffect(() => {
     if (!subjectId) {
-      setLoading(false);
+      setLoadingProfile(false);
       return;
     }
     let cancelled = false;
     (async () => {
       try {
-        setLoading(true);
+        setLoadingProfile(true);
         setLoadErr('');
         const profile = await getSubjectsId(subjectId);
         if (cancelled) return;
@@ -59,37 +65,40 @@ export default function AnswerPage() {
           imageSource: profile?.imageSource ?? profile?.imageUrl ?? null,
           questionCount: profile?.questionCount ?? 0,
         });
-
-        const data = await getQuestion(subjectId);
-        if (cancelled) return;
-        const rawList = Array.isArray(data) ? data : (data?.results ?? []);
-        const normalized = rawList.map(q => {
-          const firstAnswer =
-            q.answer ??
-            (Array.isArray(q.answers) && q.answers.length > 0
-              ? q.answers[0]
-              : null);
-          return {
-            questionId: q.id,
-            question: q.content ?? '(내용 없음)',
-            createdAt: q.createdAt ? timeAgo(q.createdAt) : '방금 전',
-            answer: firstAnswer,
-            like: typeof q.like === 'number' ? q.like : 0,
-            dislike: typeof q.dislike === 'number' ? q.dislike : 0,
-          };
-        });
-        setCards(normalized);
       } catch (e) {
-        if (!cancelled)
-          setLoadErr(apiError(e) || '질문 목록을 불러오지 못했습니다.');
+        if (!cancelled) setLoadErr(apiError(e));
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setLoadingProfile(false);
       }
     })();
     return () => {
       cancelled = true;
     };
   }, [subjectId]);
+
+  // IntersectionObserver로 무한스크롤 트리거
+  useEffect(() => {
+    if (!subjectId) return;
+    const el = loadMoreRef.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      entries => {
+        const entry = entries[0];
+        if (entry.isIntersecting && moreNext && !isLoading) {
+          loadMoreQuestions();
+        }
+      },
+      { root: null, rootMargin: '200px', threshold: 0 }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [subjectId, moreNext, isLoading, loadMoreQuestions]);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingProfile, setDeletingProfile] = useState(false);
+  const [deleteErr, setDeleteErr] = useState('');
 
   useEffect(() => {
     if (!showDeleteModal) return;
@@ -127,9 +136,9 @@ export default function AnswerPage() {
         content,
         isRejected: false,
       });
-      setCards(prev =>
-        prev.map(c =>
-          c.questionId === questionId ? { ...c, answer: created } : c
+      setQuestionList(prev =>
+        prev.map(item =>
+          item.id === questionId ? { ...item, answer: created } : item
         )
       );
       return created;
@@ -141,9 +150,9 @@ export default function AnswerPage() {
   const onEditAnswer = async (answerId, content) => {
     try {
       const updated = await patchAnswer(answerId, { content });
-      setCards(prev =>
-        prev.map(c =>
-          c.answer?.id === answerId ? { ...c, answer: updated } : c
+      setQuestionList(prev =>
+        prev.map(item =>
+          item.answer?.id === answerId ? { ...item, answer: updated } : item
         )
       );
       return updated;
@@ -155,13 +164,29 @@ export default function AnswerPage() {
   const onDeleteAnswer = async answerId => {
     try {
       await deleteAnswer(answerId);
-      setCards(prev =>
-        prev.map(c => (c.answer?.id === answerId ? { ...c, answer: null } : c))
+      setQuestionList(prev =>
+        prev.map(item =>
+          item.answer?.id === answerId ? { ...item, answer: null } : item
+        )
       );
     } catch (e) {
       throw new Error(apiError(e));
     }
   };
+
+  const cards = questionList.map(q => {
+    const firstAnswer =
+      q.answer ??
+      (Array.isArray(q.answers) && q.answers.length > 0 ? q.answers[0] : null);
+    return {
+      questionId: q.id,
+      question: q.content ?? '(내용 없음)',
+      createdAt: q.createdAt ? timeAgo(q.createdAt) : '방금 전',
+      answer: firstAnswer,
+      like: typeof q.like === 'number' ? q.like : 0,
+      dislike: typeof q.dislike === 'number' ? q.dislike : 0,
+    };
+  });
 
   return (
     <div className="min-h-screen bg-gs-20 flex flex-col items-center overflow-x-hidden">
@@ -211,7 +236,7 @@ export default function AnswerPage() {
           <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px]">
             <div className="flex items-center justify-center gap-[8px] mb-[16px]">
               <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
-              {loading ? (
+              {loadingProfile ? (
                 <h2 className="text-[20px] font-[400] text-bn-40">
                   불러오는 중…
                 </h2>
@@ -230,7 +255,8 @@ export default function AnswerPage() {
               </div>
             )}
 
-            {!loading &&
+            {/* 카드 리스트 */}
+            {!loadingProfile &&
               cards.map(c => (
                 <AnswerCard
                   key={c.questionId}
@@ -248,16 +274,21 @@ export default function AnswerPage() {
                 />
               ))}
 
-            {!loading && cards.length === 0 && !loadErr && (
+            {!loadingProfile && cards.length === 0 && !loadErr && (
               <div className="w-full text-center text-gs-50 my-6">
                 등록된 질문이 없습니다.
+              </div>
+            )}
+            <div ref={loadMoreRef} className="w-full h-8" />
+            {isLoading && (
+              <div className="w-full py-4 text-center text-gs-50">
+                불러오는 중…
               </div>
             )}
           </section>
         </main>
       )}
 
-      {/* 프로필삭제 알레트 -> 모달로 업그레이드  */}
       {subjectId && showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
@@ -268,7 +299,7 @@ export default function AnswerPage() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="deleteProfileTitle"
-            className="relative mx-4 w-full max-w-[420px] rounded-2xl bg-white shadow-lg ring-1 ring-gs-30 p-6"
+            className="relative mx-4 w/full min-w-[420px] rounded-2xl bg-white shadow-lg ring-1 ring-gs-30 p-6"
           >
             <h3
               id="deleteProfileTitle"

@@ -6,7 +6,8 @@ function QuestionFeed({ userInfo, questions }) {
   const hasQuestions = questions.length > 0;
 
   return (
-    <section className="max-w-[684px]rounded-[16px] p-[16px] flex flex-col items-center">
+    <section className="max-w-[684px]rounded-[16px] p-[16px] flex flex-col items-center break-anywhere">
+      {/* break-anywhere로 특수문자로 인한 텍스트 창 꺠짐 방지 */}
       <QuestionCounter userInfo={userInfo} />
       {hasQuestions ? (
         questions.map(question => (

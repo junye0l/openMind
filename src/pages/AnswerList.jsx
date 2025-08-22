@@ -47,7 +47,7 @@ export default function AnswerList() {
 
   const sortedItem = [...items].sort((a, b) => {
     if (order === 'name') {
-      return a.name.localeCompare(b.name, 'ko', { numeric: true })
+      return a.name.localeCompare(b.name, 'ko', { numeric: true });
     } else {
       return b[order] - a[order];
     }
@@ -69,7 +69,7 @@ export default function AnswerList() {
           <Select handleNew={handleNew} handleName={handleName} />
         </div>
         {loading ? <CardList items={sortedItem} /> : <div>로딩중...</div>}
-        
+
         <Pagination
           currentPages={currentPages}
           setCurrentPages={setCurrentPages}
