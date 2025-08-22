@@ -114,32 +114,30 @@ export default function QuestionModal({
 
     setLoading(true);
     try {
-      // POST /subjects/:id/questions/ (axios instance baseURL: https://openmind-api.vercel.app/18-1)
       const res = await instance.post(
         `/subjects/${effectiveSubjectId}/questions/`,
         { content: body }
       );
       console.log('[Send] status', res.status); // 201 기대
 
-      // 입력/모달 초기화
       setQuestion('');
       setIsModalOpen(false);
 
-      // 부모 콜백(onSent)이 있으면 먼저 호출 (실패해도 무시)
+      //  토스트 켜기(부모)
       try {
         if (typeof onSent === 'function') onSent();
       } catch {
         /* noop */
       }
 
-      // 부모가 콜백을 안 줬을 때만(예외) 안전하게 새로고침
-      if (typeof onSent !== 'function') {
+      // 리스트 갱신
+      setTimeout(() => {
         try {
           navigate(0);
         } catch {
           window.location.reload();
         }
-      }
+      }, 0);
     } catch (err) {
       console.error('질문 전송 실패:', err);
       alert('질문 전송에 실패했어요. 잠시 후 다시 시도해주세요.');
