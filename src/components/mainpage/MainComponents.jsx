@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import RightArrow from '../../assets/images/Arrow-right.svg?react';
 import LogoImg from '../../assets/images/logo.svg?react';
-import MainImg from '../../assets/images/main_bg.svg?react';
+import MainBg from '../../assets/images/main_bg.png';
 import UserIcon from '../../assets/images/user_icon.svg?react';
 import { postSubjectsId } from '../../api/postSubjectsId';
 import Button from '../AnswerList/Button';
@@ -219,7 +219,7 @@ const MainComponents = () => {
         transition={{ duration: 0.8, delay: 0.3 }}
         aria-hidden="true"
       >
-        <MainImg className="w-full h-auto block" />
+        <img src={MainBg} alt="배경 이미지" className="w-full h-auto block" />
       </motion.figure>
     </motion.main>
   );
