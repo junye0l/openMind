@@ -13,6 +13,7 @@ function ProfileSection({ userInfo }) {
       <img
         className="w-[136px] h-[136px] max-sm:w-[104px] max-sm:h-[104px] rounded-full"
         src={userInfo.imageSource}
+        alt="프로필"
       />
       <p className="text-[32px] max-sm:text-[24px]">{userInfo.name}</p>
       <div className="flex gap-[12px] justify-center">
