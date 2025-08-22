@@ -35,7 +35,7 @@ function Select({ handleNew, handleName }) {
     return () => {
       document.addEventListener('mousedown', handleClickOutSide);
     };
-  },[]);
+  }, []);
 
   return (
     <div
@@ -76,4 +76,4 @@ export default memo(Select, (prev, next) => {
   if (prev.handleName !== next.handleName) return false;
 
   return true;
-})
+});

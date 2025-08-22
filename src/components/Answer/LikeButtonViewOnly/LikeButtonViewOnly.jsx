@@ -51,12 +51,12 @@ export default function LikeButtonViewOnly({
 
       <div
         className={`flex items-center gap-[6px] select-none ${
-          isDislikeActive ? 'text-b50' : 'text-gs-40'
+          isDislikeActive ? 'text-gs-60' : 'text-gs-40'
         }`}
       >
         <ThumbsDown
           className={`w-[16px] h-[16px] ${
-            isDislikeActive ? 'fill-b50' : 'fill-gs-40'
+            isDislikeActive ? 'fill-gs-60' : 'fill-gs-40'
           }`}
         />
         <p>싫어요</p>

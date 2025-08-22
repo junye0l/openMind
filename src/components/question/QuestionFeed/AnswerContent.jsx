@@ -5,7 +5,7 @@ function AnswerContent({ userInfo, isAnswer, createdAt }) {
     <div className="flex gap-[12px]">
       <img
         src={userInfo.imageSource}
-        className="w-[48px] h-[48px] rounded-full"
+        className="w-[48px] h-[48px] max-sm:w-[32px] max-sm:h-[32px] rounded-full"
       />
       <div className="flex flex-col flex-1 gap-[4px]">
         <div className="flex items-center gap-[12px] ">
