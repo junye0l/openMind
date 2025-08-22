@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import Button from './Button';
 import LogoImg from './LogoImg';
+import { memo } from 'react';
 
-export default function Header() {
+function Header() {
   const id = localStorage.getItem("id");
   const NaviPath = id ? `/post/${id}/answer` : '/';
 
@@ -17,3 +18,4 @@ export default function Header() {
     </header>
   );
 }
+export default memo(Header);

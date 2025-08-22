@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/logo.svg?react';
-import LinkImg from '../../assets/images/Link.svg?react';
-import KakaoImg from '../../assets/images/Kakaotalk.svg?react';
-import FacebookImg from '../../assets/images/Facebook.svg?react';
+import FacebookShareButton from './ShareButton/FacebookShareButton';
+import KakaoShareButton from './ShareButton/KakaoShareButton';
+import CopyUrlButton from './ShareButton/CopyUrlButton';
 
 function ProfileSection({ userInfo }) {
   return (
@@ -15,16 +15,10 @@ function ProfileSection({ userInfo }) {
         src={userInfo.imageSource}
       />
       <p className="text-[32px] ">{userInfo.name}</p>
-      <div className="flex gap-[12px]">
-        <button className="p-[11px] bg-bn-40 flex justify-center items-center rounded-full">
-          <LinkImg className="fill-gs-10" />
-        </button>
-        <button className="p-[11px] bg-y50 flex justify-center items-center rounded-full">
-          <KakaoImg className="fill-gs-60" />
-        </button>
-        <button className="p-[11px] bg-b50 flex justify-center items-center rounded-full">
-          <FacebookImg className="fill-gs-10" />
-        </button>
+      <div className="flex gap-[12px] justify-center">
+        <CopyUrlButton />
+        <KakaoShareButton userInfo={userInfo} />
+        <FacebookShareButton />
       </div>
     </section>
   );
