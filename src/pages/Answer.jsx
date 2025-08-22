@@ -257,7 +257,7 @@ export default function AnswerPage() {
         </main>
       )}
 
-      {/* 프로필삭제 알레트 -> 모달로 업그레이드 */}
+      {/* 프로필삭제 알레트 -> 모달로 업그레이드  */}
       {subjectId && showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
