@@ -5,7 +5,7 @@ import { getSubjectsId } from '../api/getSubjectsId';
 import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
 import Headers from '../components/question/Headers';
-import AnswerCard from '../components/answer/AnswerCard';
+import AnswerCard from '../components/Answer/AnswerCard';
 import MessagesIcon from '../assets/images/messages.svg?react';
 
 const apiError = e =>
