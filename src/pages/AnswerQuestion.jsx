@@ -48,7 +48,7 @@ function AnswerQuestion() {
   return (
     <div className="w-full bg-gs-20 flex flex-col items-center">
       <Headers userInfo={userInfo} />
-      <div className="w-full flex justify-center tablet:px-[32px] mobile:px-[24px]">
+      <div className="w-full flex justify-center max-md:px-[32px] max-sm:px-[24px]">
         <QuestionFeedList userInfo={userInfo} questions={questionList} />
       </div>
       <div ref={observer} />

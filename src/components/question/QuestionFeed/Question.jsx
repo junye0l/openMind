@@ -6,7 +6,7 @@ function Question({ content, createdAt }) {
       <p className="text-[14px] font-medium text-gs-40">
         질문 · {getPreviouslyTime(createdAt)}
       </p>
-      <p className="text-[18px] mobile:text-[16px] font-normal">{content}</p>
+      <p className="text-[18px] max-sm:text-[16px] font-normal">{content}</p>
     </div>
   );
 }
