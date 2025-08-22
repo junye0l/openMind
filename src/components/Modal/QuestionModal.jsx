@@ -174,7 +174,7 @@ export default function QuestionModal({
                 <span className="text-[18px]" aria-hidden>
                   💬
                 </span>
-                <h1 id="q-title" className="py-3 m-0 text-[21px] font-bold">
+                <h1 id="q-title" className="py-3 m-0 text-[21px] font-bold ">
                   질문을 작성하세요
                 </h1>
               </div>
