@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getSubjects } from '../api/getSubjects';
+import { getSubjects } from '../api/getsubjects';
 import CardList from '../components/AnswerList/CardList';
 import Header from '../components/AnswerList/Header';
 import Pagination from '../components/AnswerList/Pagination';

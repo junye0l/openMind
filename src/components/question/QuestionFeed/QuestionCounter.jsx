@@ -1,4 +1,4 @@
-import Messages from '../../../assets/images/messages.svg?react';
+import Messages from '../../../assets/images/Messages.svg?react';
 
 function QuestionCounter({ userInfo }) {
   return (
