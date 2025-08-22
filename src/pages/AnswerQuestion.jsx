@@ -36,7 +36,7 @@ function AnswerQuestion() {
   if (error) return <p>에러: {error}</p>;
 
   return (
-    <div className=" bg-gs-20 flex flex-col items-center">
+    <div className="w-full bg-gs-20 flex flex-col items-center">
       <Headers userInfo={userInfo} />
       <QuestionFeedList userInfo={userInfo} questions={questionList} />
       <div ref={observer} />
