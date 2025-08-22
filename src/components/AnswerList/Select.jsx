@@ -3,7 +3,7 @@ import SelectIcon from '../../assets/images/Arrow-down.svg?react';
 
 function Select({ handleNew, handleName }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectValue, setSelectValue] = useState('이름순');
+  const [selectValue, setSelectValue] = useState('최신순');
   const sortOptions = ['이름순', '최신순'];
   const selectRef = useRef(null);
 
