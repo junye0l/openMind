@@ -5,7 +5,7 @@ import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
 import Headers from '../components/question/Headers';
 import AnswerCard from '../components/Answer/AnswerCard';
-import MessagesIcon from '../assets/images/messages.svg?react';
+import MessagesIcon from '../assets/images/Messages.svg?react';
 import useInfiniteScroll from '../hook/useInfiniteScroll'; // 개별피드 무한스크롤 훅
 
 const apiError = e =>
