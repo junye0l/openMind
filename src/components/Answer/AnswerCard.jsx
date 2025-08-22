@@ -109,6 +109,7 @@ export default function AnswerCard({
         </span>
 
         <div className="ml-auto relative" ref={menuRef}>
+          {/* 케밥 버튼 컴포넌트화 시키기 */}
           <button
             type="button"
             aria-haspopup="menu"
