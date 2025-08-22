@@ -39,3 +39,9 @@
     font-family: 'Pretendard', sans-serif;
   }
 }
+
+/*텍스트창에 특수기호 폭주해도 안깨지게 방어*/
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}

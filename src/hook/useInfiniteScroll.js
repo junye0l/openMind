@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getQuestionList } from '../api/getQuestion';
 
-function useInfiniteScroll(subjectId) {
+export default function useInfiniteScroll(subjectId, pageSize = 8) {
   const [questionList, setQuestionList] = useState([]);
   const [moreNext, setMoreNext] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -11,30 +11,38 @@ function useInfiniteScroll(subjectId) {
     setIsLoading(true);
     try {
       const currentOffset = questionList.length;
-      const response = await getQuestionList(subjectId, 8, currentOffset);
-      setQuestionList(prevList => {
-        const existingIds = prevList.map(q => q.id);
-        const newItems = response.results.filter(
-          item => !existingIds.includes(item.id)
-        );
-        return [...prevList, ...newItems];
+      const res = await getQuestionList(subjectId, pageSize, currentOffset);
+
+      setQuestionList(prev => {
+        const exist = new Set(prev.map(q => q.id));
+        const next = (res?.results ?? []).filter(it => !exist.has(it.id));
+        return [...prev, ...next];
       });
 
-      setMoreNext(response.next !== null);
-      setIsLoading(false);
+      setMoreNext(Boolean(res?.next));
     } catch (e) {
-      console.error(`오류입니다. ${e.message}`);
+      console.error(`오류입니다. ${e?.message || e}`);
+    } finally {
       setIsLoading(false);
     }
-  }, [subjectId, questionList.length, isLoading, moreNext]);
+  }, [subjectId, questionList.length, isLoading, moreNext, pageSize]);
 
+  // subjectId 바뀌면 초기화
   useEffect(() => {
-    if (subjectId && questionList.length === 0) {
-      loadMoreQuestions();
-    }
+    setQuestionList([]);
+    setMoreNext(true);
   }, [subjectId]);
 
-  return { questionList, moreNext, isLoading, subjectId, loadMoreQuestions };
-}
+  // 첫 페이지
+  useEffect(() => {
+    if (subjectId && questionList.length === 0) loadMoreQuestions();
+  }, [subjectId, questionList.length, loadMoreQuestions]);
 
-export default useInfiniteScroll;
+  return {
+    questionList,
+    moreNext,
+    isLoading,
+    loadMoreQuestions,
+    setQuestionList,
+  };
+}
