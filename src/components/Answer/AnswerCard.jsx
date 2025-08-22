@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import LikeButtonViewOnly from './LikeButtonViewOnly/LikeButtonViewOnly';
 
 import ProfileImg from '../../assets/images/profile_img.svg?react';
 import MoreIcon from '../../assets/images/More.svg?react';
 import EditIcon from '../../assets/images/Edit.svg?react';
 import CloseIcon from '../../assets/images/Close.svg?react';
-import ThumbsUpIcon from '../../assets/images/thumbs-up.svg?react';
-import ThumbsDownIcon from '../../assets/images/thumbs-down.svg?react';
 
 export default function AnswerCard({
   questionId,
@@ -14,17 +13,18 @@ export default function AnswerCard({
   question,
   createdAt,
   answer,
+  like = 0,
+  dislike = 0,
   onCreate,
   onEdit,
   onDelete,
 }) {
-  const [mode, setMode] = useState('idle'); // idle, editing, confirm-delete
-  const [vote, setVote] = useState(null); // like, dislike, null
+  const [mode, setMode] = useState('idle');
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const [text, setText] = useState(''); // 새 답변
-  const [editText, setEditText] = useState(''); // 수정 답변
+  const [text, setText] = useState('');
+  const [editText, setEditText] = useState('');
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -36,7 +36,6 @@ export default function AnswerCard({
     if (isAnswered) setEditText(answer.content ?? '');
   }, [isAnswered, answer?.content]);
 
-  // 외부 클릭 시 메뉴 닫기
   useEffect(() => {
     const onClickOutside = e => {
       if (!menuRef.current) return;
@@ -45,8 +44,6 @@ export default function AnswerCard({
     if (menuOpen) document.addEventListener('mousedown', onClickOutside);
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, [menuOpen]);
-
-  const toggleVote = v => setVote(prev => (prev === v ? null : v));
 
   const handleCreate = async () => {
     if (!text.trim()) return;
@@ -91,12 +88,12 @@ export default function AnswerCard({
   };
 
   return (
-    <article className="bg-gs-10 w-[652px] rounded-[16px] p-[32px] mt-[20px] flex flex-col items-start gap-[24px]">
-      {/* 상태svg 및 더보기 */}
+    <article className="bg-gs-10 w-full max-w-[652px] rounded-[16px] p-8 md:p-[32px] mt-[20px] flex flex-col items-start gap-[24px]">
       <div className="w-full flex items-center">
         <span
-          className={`px-[12px] py-[4px] text-[14px] font-medium border border-solid rounded-[8px]
-            ${isAnswered ? 'text-bn-40 border-bn-40' : 'text-gs-40 border-gs-40'}`}
+          className={`px-[12px] py-[4px] text-[14px] font-medium border border-solid rounded-[8px] ${
+            isAnswered ? 'text-bn-40 border-bn-40' : 'text-gs-40 border-gs-40'
+          }`}
         >
           {isAnswered ? '답변 완료' : '미답변'}
         </span>
@@ -146,7 +143,7 @@ export default function AnswerCard({
                 className="group flex items-center gap-2 h-[34px] w-full rounded-[6px] px-2 text-[13px] text-gs-50 hover:bg-gs-20 hover:text-bn-50"
               >
                 <CloseIcon className="w-4 h-4" aria-hidden />
-                답변 삭제
+                답변삭제
               </button>
             </div>
           )}
@@ -166,10 +163,10 @@ export default function AnswerCard({
             <img
               src={authorImage}
               alt={`${author} 프로필`}
-              className="w-[48px] h-[48px] rounded-full object-cover"
+              className="w-10 h-10 md:w-[48px] md:h-[48px] rounded-full object-cover"
             />
           ) : (
-            <ProfileImg className="w-[48px] h-[48px]" />
+            <ProfileImg className="w-10 h-10 md:w-[48px] md:h-[48px]" />
           )}
 
           <div className="flex-1 flex flex-col gap-[8px]">
@@ -259,25 +256,11 @@ export default function AnswerCard({
           </div>
         </div>
 
-        {/* 좋,싫 버튼, 나중에 가져오기만 해도*/}
-        <div className="border-t-gs-30 border-t-[1px] w-full pt-[24px] flex gap-[32px] text-[14px] font-medium text-gs-40 mt-[16px]">
-          <button
-            type="button"
-            className={`flex items-center gap-[6px] ${vote === 'like' ? 'text-bn-40' : ''}`}
-            onClick={() => toggleVote('like')}
-          >
-            <ThumbsUpIcon className="w-[16px] h-[16px]" />
-            <p>좋아요</p>
-          </button>
-          <button
-            type="button"
-            className={`flex items-center gap-[6px] ${vote === 'dislike' ? 'text-bn-40' : ''}`}
-            onClick={() => toggleVote('dislike')}
-          >
-            <ThumbsDownIcon className="w-[16px] h-[16px]" />
-            <p>싫어요</p>
-          </button>
-        </div>
+        <LikeButtonViewOnly
+          questionId={questionId}
+          like={like}
+          dislike={dislike}
+        />
       </div>
     </article>
   );
