@@ -7,6 +7,7 @@ import QuestionModal from '../components/Modal/QuestionModal';
 import useUserInfo from '../hook/useInfo';
 import useInfiniteScroll from '../hook/useInfiniteScroll';
 import { useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function AnswerQuestion() {
   const { userInfo, loading, error } = useUserInfo();
@@ -14,12 +15,24 @@ function AnswerQuestion() {
     useInfiniteScroll(userInfo?.id);
 
   const [showToast, setShowToast] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!showToast) return;
     const t = setTimeout(() => setShowToast(false), 1200);
-    return () => clearTimeout(t);
-  }, [showToast]);
+    const r = setTimeout(() => {
+      try {
+        navigate(0);
+      } catch {
+        // soft reload
+        window.location.reload();
+      }
+    }, 1200);
+    return () => {
+      clearTimeout(t);
+      clearTimeout(r);
+    };
+  }, [showToast, navigate]);
 
   const observerRef = useRef();
 

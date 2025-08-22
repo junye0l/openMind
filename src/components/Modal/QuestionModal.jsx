@@ -5,7 +5,7 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import instance from '../../api/ApiAxios.js';
 import profileImg from '../../assets/images/profile_img.svg';
 
@@ -15,7 +15,6 @@ export default function QuestionModal({
   subjectName, // 외부에서 넘겨주는 대상 이름(선택)
   subjectAvatarUrl, // 외부에서 넘겨주는 대상 아바타 URL(선택)
 }) {
-  const navigate = useNavigate();
   const { id: routeId } = useParams(); // /subjects/:id 라우트일 때 URL의 id
   const textareaRef = useRef(null);
 
@@ -129,22 +128,13 @@ export default function QuestionModal({
       } catch {
         /* noop */
       }
-
-      // 리스트 갱신
-      setTimeout(() => {
-        try {
-          navigate(0);
-        } catch {
-          window.location.reload();
-        }
-      }, 0);
     } catch (err) {
       console.error('질문 전송 실패:', err);
       alert('질문 전송에 실패했어요. 잠시 후 다시 시도해주세요.');
     } finally {
       setLoading(false);
     }
-  }, [question, effectiveSubjectId, navigate, onSent]);
+  }, [question, effectiveSubjectId, onSent]);
 
   return (
     <>
