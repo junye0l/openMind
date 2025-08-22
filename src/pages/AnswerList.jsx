@@ -5,9 +5,10 @@ import Header from '../components/AnswerList/Header';
 import Pagination from '../components/AnswerList/Pagination';
 import Select from '../components/AnswerList/Select';
 import Title from '../components/AnswerList/Title';
+const mediaSize = window.innerWidth;
 
 export default function AnswerList() {
-  const [order, setOrder] = useState('name');
+  const [order, setOrder] = useState('createdAt');
   const [items, setItems] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPages, setCurrentPages] = useState(1);
@@ -16,7 +17,7 @@ export default function AnswerList() {
 
   useEffect(() => {
     const MediaItems = () => {
-      if (window.innerWidth < 1024) {
+      if (mediaSize < 1024) {
         setLimit(6);
       } else {
         setLimit(8);

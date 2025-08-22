@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import QuestionFeedList from '../components/question/QuestionFeedList';
 import Headers from '../components/question/Headers';
 import FloatingButton from '../components/question/FloatingButton';
@@ -10,6 +12,14 @@ function AnswerQuestion() {
   const { userInfo, loading, error } = useUserInfo();
   const { questionList, moreNext, isLoading, loadMoreQuestions } =
     useInfiniteScroll(userInfo?.id);
+
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    if (!showToast) return;
+    const t = setTimeout(() => setShowToast(false), 1200);
+    return () => clearTimeout(t);
+  }, [showToast]);
 
   const observerRef = useRef();
 
@@ -41,7 +51,27 @@ function AnswerQuestion() {
       <QuestionFeedList userInfo={userInfo} questions={questionList} />
       <div ref={observer} />
       <FloatingButton />
-      <QuestionModal />
+      <QuestionModal onSent={() => setShowToast(true)} />
+
+      {/* 페이지 레벨 토스트 */}
+      <AnimatePresence>
+        {showToast && (
+          <div className="fixed inset-x-0 bottom-6 flex justify-center z-[60] pointer-events-none">
+            <motion.div
+              key="toast"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.25 }}
+              className="rounded-lg px-4 py-3 bg-bn-40 text-white shadow-lg pointer-events-auto"
+              role="status"
+              aria-live="polite"
+            >
+              질문이 생성되었습니다!
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
