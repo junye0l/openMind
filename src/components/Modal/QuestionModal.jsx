@@ -122,19 +122,17 @@ export default function QuestionModal({
       setQuestion('');
       setIsModalOpen(false);
 
-      //  토스트 켜기(부모)
-      try {
-        if (typeof onSent === 'function') onSent();
-      } catch {
-        /* noop */
-      }
+      //  리로드 후 토스트를 띄우기 위한 플래그 저장
+      sessionStorage.setItem('toast:newQuestion', '1');
+      //  즉시 리로드 (대기시간 없음)
+      window.location.reload();
     } catch (err) {
       console.error('질문 전송 실패:', err);
       alert('질문 전송에 실패했어요. 잠시 후 다시 시도해주세요.');
     } finally {
       setLoading(false);
     }
-  }, [question, effectiveSubjectId, onSent]);
+  }, [question, effectiveSubjectId]);
 
   return (
     <>

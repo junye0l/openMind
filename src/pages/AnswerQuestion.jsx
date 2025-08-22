@@ -7,7 +7,6 @@ import QuestionModal from '../components/Modal/QuestionModal';
 import useUserInfo from '../hook/useInfo';
 import useInfiniteScroll from '../hook/useInfiniteScroll';
 import { useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 function AnswerQuestion() {
   const { userInfo, loading, error } = useUserInfo();
@@ -15,24 +14,17 @@ function AnswerQuestion() {
     useInfiniteScroll(userInfo?.id);
 
   const [showToast, setShowToast] = useState(false);
-  const navigate = useNavigate();
 
+  // 페이지가 새로고침되어 마운트될 때 토스트 플래그 확인
   useEffect(() => {
-    if (!showToast) return;
-    const t = setTimeout(() => setShowToast(false), 1200);
-    const r = setTimeout(() => {
-      try {
-        navigate(0);
-      } catch {
-        // soft reload
-        window.location.reload();
-      }
-    }, 1200);
-    return () => {
-      clearTimeout(t);
-      clearTimeout(r);
-    };
-  }, [showToast, navigate]);
+    const KEY = 'toast:newQuestion';
+    if (sessionStorage.getItem(KEY) === '1') {
+      sessionStorage.removeItem(KEY);
+      setShowToast(true);
+      const t = setTimeout(() => setShowToast(false), 1200);
+      return () => clearTimeout(t);
+    }
+  }, []); // ← 마운트 한 번만 실행
 
   const observerRef = useRef();
 
@@ -66,7 +58,7 @@ function AnswerQuestion() {
       </div>
       <div ref={observer} />
       <FloatingButton />
-      <QuestionModal onSent={() => setShowToast(true)} />
+      <QuestionModal />
 
       {/* 페이지 레벨 토스트 */}
       <AnimatePresence>
