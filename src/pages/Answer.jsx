@@ -38,6 +38,10 @@ export default function AnswerPage() {
   const [loading, setLoading] = useState(true);
   const [loadErr, setLoadErr] = useState('');
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingProfile, setDeletingProfile] = useState(false);
+  const [deleteErr, setDeleteErr] = useState('');
+
   useEffect(() => {
     if (!subjectId) {
       setLoading(false);
@@ -87,17 +91,33 @@ export default function AnswerPage() {
     };
   }, [subjectId]);
 
-  const handleDeleteProfile = async () => {
-    if (!subjectId) return;
-    const ok = window.confirm('프로필을 삭제하시겠습니까?');
-    if (!ok) return;
+  useEffect(() => {
+    if (!showDeleteModal) return;
+    const onKey = e => {
+      if (e.key === 'Escape') setShowDeleteModal(false);
+    };
+    document.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [showDeleteModal]);
+
+  const handleConfirmDeleteProfile = async () => {
+    if (!subjectId || deletingProfile) return;
     try {
+      setDeletingProfile(true);
+      setDeleteErr('');
       await deleteSubjectsId(subjectId);
       localStorage.removeItem('id');
-      alert('프로필이 삭제되었습니다.');
+      setShowDeleteModal(false);
       navigate('/list', { replace: true });
     } catch (e) {
-      alert(apiError(e));
+      setDeleteErr(apiError(e));
+    } finally {
+      setDeletingProfile(false);
     }
   };
 
@@ -145,7 +165,7 @@ export default function AnswerPage() {
 
   return (
     <div className="min-h-screen bg-gs-20 flex flex-col items-center overflow-x-hidden">
-      {!subjectId ? (
+      {!subjectId && (
         <div className="min-h-screen flex items-center justify-center bg-gs-20 w-full">
           <div className="bg-white rounded-xl p-8 shadow text-center">
             <p className="text-bn-50 mb-4">프로필을 생성해주세요.</p>
@@ -158,81 +178,132 @@ export default function AnswerPage() {
             </button>
           </div>
         </div>
-      ) : (
-        <>
-          <Headers
-            userInfo={
-              userInfo ?? {
-                name: '내 프로필',
-                imageSource: null,
-                questionCount: 0,
-              }
-            }
-          />
+      )}
 
-          {/* 프로필 삭제 버튼 */}
-          <div className="w-full flex justify-center px-4 md:px-0">
-            <div className="w-full max-w-[716px] flex justify-end mt-[172px]">
+      {subjectId && (
+        <Headers
+          userInfo={
+            userInfo ?? {
+              name: '내 프로필',
+              imageSource: null,
+              questionCount: 0,
+            }
+          }
+        />
+      )}
+
+      {subjectId && (
+        <div className="w-full flex justify-center px-4 md:px-0">
+          <div className="w-full max-w-[716px] flex justify-end mt-[172px]">
+            <button
+              type="button"
+              onClick={() => setShowDeleteModal(true)}
+              className="px-5 h-[35px] rounded-full bg-bn-40 text-gs-10 text-sm font-medium hover:opacity-90"
+            >
+              삭제하기
+            </button>
+          </div>
+        </div>
+      )}
+
+      {subjectId && (
+        <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center px-4 md:px-0">
+          <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px]">
+            <div className="flex items-center justify-center gap-[8px] mb-[16px]">
+              <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
+              {loading ? (
+                <h2 className="text-[20px] font-[400] text-bn-40">
+                  불러오는 중…
+                </h2>
+              ) : (
+                <h2 className="text-[20px] font-[400] text-bn-40">
+                  {cards.length === 0
+                    ? '아직 질문이 없습니다.'
+                    : `${cards.length}개의 질문이 있습니다.`}
+                </h2>
+              )}
+            </div>
+
+            {loadErr && (
+              <div className="w-full text-center text-red-600 text-sm mb-3">
+                {loadErr}
+              </div>
+            )}
+
+            {!loading &&
+              cards.map(c => (
+                <AnswerCard
+                  key={c.questionId}
+                  questionId={c.questionId}
+                  author={userInfo?.name ?? '내 프로필'}
+                  authorImage={userInfo?.imageSource ?? null}
+                  question={c.question}
+                  createdAt={c.createdAt}
+                  answer={c.answer}
+                  like={c.like}
+                  dislike={c.dislike}
+                  onCreate={onCreateAnswer}
+                  onEdit={onEditAnswer}
+                  onDelete={onDeleteAnswer}
+                />
+              ))}
+
+            {!loading && cards.length === 0 && !loadErr && (
+              <div className="w-full text-center text-gs-50 my-6">
+                등록된 질문이 없습니다.
+              </div>
+            )}
+          </section>
+        </main>
+      )}
+
+      {/* 프로필삭제 알레트 -> 모달로 업그레이드 */}
+      {subjectId && showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/10"
+            onClick={() => !deletingProfile && setShowDeleteModal(false)}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="deleteProfileTitle"
+            className="relative mx-4 w-full max-w-[420px] rounded-2xl bg-white shadow-lg ring-1 ring-gs-30 p-6"
+          >
+            <h3
+              id="deleteProfileTitle"
+              className="text-[18px] font-semibold text-bn-50"
+            >
+              프로필을 삭제할까요?
+            </h3>
+            <p className="mt-2 text-[14px] text-gs-50">
+              모든 질문과 답변이 삭제됩니다.
+            </p>
+
+            {deleteErr && (
+              <p className="mt-3 text-[13px] text-red-600">{deleteErr}</p>
+            )}
+
+            <div className="mt-6 grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={handleDeleteProfile}
-                className="px-5 h-[35px] rounded-full bg-bn-40 text-gs-10 text-sm font-medium hover:opacity-90"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deletingProfile}
+                className="h-11 rounded-lg border border-gs-30 text-[14px] hover:bg-gs-20"
               >
-                삭제하기
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteProfile}
+                disabled={deletingProfile}
+                className="h-11 rounded-lg bg-red-500 text-white text-[14px] font-semibold hover:opacity-90"
+              >
+                {deletingProfile ? '삭제 중…' : '삭제하기'}
               </button>
             </div>
           </div>
-
-          {/* 질문 리스트 */}
-          <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center px-4 md:px-0">
-            <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px]">
-              <div className="flex items-center justify-center gap-[8px] mb-[16px]">
-                <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
-                {loading ? (
-                  <h2 className="text-[20px] font-[400] text-bn-40">
-                    불러오는 중…
-                  </h2>
-                ) : (
-                  <h2 className="text-[20px] font-[400] text-bn-40">
-                    {cards.length === 0
-                      ? '아직 질문이 없습니다.'
-                      : `${cards.length}개의 질문이 있습니다.`}
-                  </h2>
-                )}
-              </div>
-
-              {loadErr && (
-                <div className="w-full text-center text-red-600 text-sm mb-3">
-                  {loadErr}
-                </div>
-              )}
-
-              {!loading &&
-                cards.map(c => (
-                  <AnswerCard
-                    key={c.questionId}
-                    questionId={c.questionId}
-                    author={userInfo?.name ?? '내 프로필'}
-                    authorImage={userInfo?.imageSource ?? null}
-                    question={c.question}
-                    createdAt={c.createdAt}
-                    answer={c.answer}
-                    like={c.like}
-                    dislike={c.dislike}
-                    onCreate={onCreateAnswer}
-                    onEdit={onEditAnswer}
-                    onDelete={onDeleteAnswer}
-                  />
-                ))}
-
-              {!loading && cards.length === 0 && !loadErr && (
-                <div className="w-full text-center text-gs-50 my-6">
-                  등록된 질문이 없습니다.
-                </div>
-              )}
-            </section>
-          </main>
-        </>
+        </div>
       )}
     </div>
   );
