@@ -5,7 +5,7 @@ import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
 import Headers from '../components/question/Headers';
 import AnswerCard from '../components/Answer/AnswerCard';
-import MessagesIcon from '../assets/images/messages.svg?react';
+import MessagesIcon from '../assets/images/Messages.svg?react';
 import useInfiniteScroll from '../hook/useInfiniteScroll';
 
 const apiError = e =>
@@ -43,10 +43,12 @@ export default function AnswerPage() {
     isLoading,
     loadMoreQuestions,
     setQuestionList,
+    totalCount,
   } = useInfiniteScroll(subjectId, 8);
 
   const loadMoreRef = useRef(null);
 
+  // 프로필(질문 총 개수 포함) 불러오기
   useEffect(() => {
     if (!subjectId) {
       setLoadingProfile(false);
@@ -75,6 +77,7 @@ export default function AnswerPage() {
     };
   }, [subjectId]);
 
+  // 무한스크롤 트리거
   useEffect(() => {
     if (!subjectId) return;
     const el = loadMoreRef.current;
@@ -186,6 +189,14 @@ export default function AnswerPage() {
     };
   });
 
+  // 총 질문 개수: 리스트 totalCount → 프로필 questionCount → 로컬 렌더 개수
+  const totalQuestions =
+    (typeof totalCount === 'number' ? totalCount : null) ??
+    (typeof userInfo?.questionCount === 'number'
+      ? userInfo.questionCount
+      : null) ??
+    cards.length;
+
   return (
     <div className="min-h-screen bg-gs-20 flex flex-col items-center overflow-x-hidden">
       {!subjectId && (
@@ -230,7 +241,7 @@ export default function AnswerPage() {
       )}
 
       {subjectId && (
-        /* 바깥 래퍼로 24px 여백 */
+        // 바깥 래퍼로 24px 여백
         <div className="w-full px-6 md:px-0">
           <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mx-auto mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center">
             <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px] min-w-0">
@@ -242,9 +253,9 @@ export default function AnswerPage() {
                   </h2>
                 ) : (
                   <h2 className="text-[20px] font-[400] text-bn-40">
-                    {cards.length === 0
+                    {totalQuestions === 0
                       ? '아직 질문이 없습니다.'
-                      : `${cards.length}개의 질문이 있습니다.`}
+                      : `총 ${totalQuestions}개의 질문이 있습니다.`}
                   </h2>
                 )}
               </div>
@@ -314,7 +325,7 @@ export default function AnswerPage() {
             </p>
 
             {deleteErr && (
-              <p className="mt-3 text-[13px] text-r50">{deleteErr}</p>
+              <p className="mt-3 text-[13px] text-red-600">{deleteErr}</p>
             )}
 
             <div className="mt-6 grid grid-cols-2 gap-2">
@@ -322,7 +333,7 @@ export default function AnswerPage() {
                 type="button"
                 onClick={handleConfirmDeleteProfile}
                 disabled={deletingProfile}
-                className="h-11 rounded-lg bg-r50 text-white text-[14px] font-semibold hover:opacity-90"
+                className="h-11 rounded-lg bg-red-500 text-white text-[14px] font-semibold hover:opacity-90"
               >
                 {deletingProfile ? '삭제 중…' : '삭제하기'}
               </button>
