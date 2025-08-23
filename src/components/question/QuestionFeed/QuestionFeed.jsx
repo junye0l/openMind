@@ -20,7 +20,7 @@ function QuestionFeed({ userInfo, questions, loading }) {
           />
         ))
       ) : (
-        <EmptyPost className="my-[70px]" />
+        <EmptyPost className="my-[70px]" aria-label="빈 질문창 이미지" />
       )}
     </section>
   );

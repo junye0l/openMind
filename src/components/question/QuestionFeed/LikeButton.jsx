@@ -85,6 +85,7 @@ function LikeButton({ question }) {
       >
         <ThumbsUp
           className={` w-[16px] h-[16px] ${isLikeActive ? 'fill-b50' : 'fill-gs-40'}`}
+          aria-label="좋아요 이미지"
         />
         <p>좋아요</p>
         <p>{likeCount}</p>
@@ -95,6 +96,7 @@ function LikeButton({ question }) {
       >
         <ThumbsDown
           className={` w-[16px] h-[16px] ${isDislikeActive ? 'fill-gs-60' : 'fill-gs-40'}`}
+          aria-label="싫어요 이미지"
         />
         <p>싫어요</p>
         <p>{dislikeCount}</p>
