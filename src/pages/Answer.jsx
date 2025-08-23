@@ -5,8 +5,8 @@ import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
 import Headers from '../components/question/Headers';
 import AnswerCard from '../components/Answer/AnswerCard';
-import MessagesIcon from '../assets/images/Messages.svg?react';
-import useInfiniteScroll from '../hook/useInfiniteScroll'; // 개별피드 무한스크롤 훅
+import MessagesIcon from '../assets/images/messages.svg?react';
+import useInfiniteScroll from '../hook/useInfiniteScroll';
 
 const apiError = e =>
   e?.response?.data?.detail ||
@@ -37,7 +37,6 @@ export default function AnswerPage() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [loadErr, setLoadErr] = useState('');
 
-  // 무한스크롤 훅
   const {
     questionList,
     moreNext,
@@ -76,7 +75,6 @@ export default function AnswerPage() {
     };
   }, [subjectId]);
 
-  // IntersectionObserver로 무한스크롤 트리거
   useEffect(() => {
     if (!subjectId) return;
     const el = loadMoreRef.current;
@@ -191,8 +189,8 @@ export default function AnswerPage() {
   return (
     <div className="min-h-screen bg-gs-20 flex flex-col items-center overflow-x-hidden">
       {!subjectId && (
-        <div className="min-h-screen flex items-center justify-center bg-gs-20 w-full">
-          <div className="bg-white rounded-xl p-8 shadow text-center">
+        <div className="min-h-screen flex items-center justify-center bg-gs-20 w-full px-6">
+          <div className="bg-white rounded-xl p-8 shadow text-center w-full max-w-[716px]">
             <p className="text-bn-50 mb-4">프로필을 생성해주세요.</p>
             <button
               type="button"
@@ -218,7 +216,7 @@ export default function AnswerPage() {
       )}
 
       {subjectId && (
-        <div className="w-full flex justify-center px-4 md:px-0">
+        <div className="w-full flex justify-center px-6 md:px-0">
           <div className="w-full max-w-[716px] flex justify-end mt-[172px]">
             <button
               type="button"
@@ -232,61 +230,65 @@ export default function AnswerPage() {
       )}
 
       {subjectId && (
-        <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center px-4 md:px-0">
-          <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px]">
-            <div className="flex items-center justify-center gap-[8px] mb-[16px]">
-              <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
-              {loadingProfile ? (
-                <h2 className="text-[20px] font-[400] text-bn-40">
-                  불러오는 중…
-                </h2>
-              ) : (
-                <h2 className="text-[20px] font-[400] text-bn-40">
-                  {cards.length === 0
-                    ? '아직 질문이 없습니다.'
-                    : `${cards.length}개의 질문이 있습니다.`}
-                </h2>
+        /* 바깥 래퍼로 24px 여백 */
+        <div className="w-full px-6 md:px-0">
+          <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mx-auto mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center">
+            <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px] min-w-0">
+              <div className="flex items-center justify-center gap-[8px] mb-[16px]">
+                <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
+                {loadingProfile ? (
+                  <h2 className="text-[20px] font-[400] text-bn-40">
+                    불러오는 중…
+                  </h2>
+                ) : (
+                  <h2 className="text-[20px] font-[400] text-bn-40">
+                    {cards.length === 0
+                      ? '아직 질문이 없습니다.'
+                      : `${cards.length}개의 질문이 있습니다.`}
+                  </h2>
+                )}
+              </div>
+
+              {loadErr && (
+                <div className="w-full text-center text-red-600 text-sm mb-3">
+                  {loadErr}
+                </div>
               )}
-            </div>
 
-            {loadErr && (
-              <div className="w-full text-center text-red-600 text-sm mb-3">
-                {loadErr}
-              </div>
-            )}
+              {/* 카드 리스트 */}
+              {!loadingProfile &&
+                cards.map(c => (
+                  <AnswerCard
+                    key={c.questionId}
+                    questionId={c.questionId}
+                    author={userInfo?.name ?? '내 프로필'}
+                    authorImage={userInfo?.imageSource ?? null}
+                    question={c.question}
+                    createdAt={c.createdAt}
+                    answer={c.answer}
+                    like={c.like}
+                    dislike={c.dislike}
+                    onCreate={onCreateAnswer}
+                    onEdit={onEditAnswer}
+                    onDelete={onDeleteAnswer}
+                  />
+                ))}
 
-            {/* 카드 리스트 */}
-            {!loadingProfile &&
-              cards.map(c => (
-                <AnswerCard
-                  key={c.questionId}
-                  questionId={c.questionId}
-                  author={userInfo?.name ?? '내 프로필'}
-                  authorImage={userInfo?.imageSource ?? null}
-                  question={c.question}
-                  createdAt={c.createdAt}
-                  answer={c.answer}
-                  like={c.like}
-                  dislike={c.dislike}
-                  onCreate={onCreateAnswer}
-                  onEdit={onEditAnswer}
-                  onDelete={onDeleteAnswer}
-                />
-              ))}
+              {!loadingProfile && cards.length === 0 && !loadErr && (
+                <div className="w-full text-center text-gs-50 my-6">
+                  등록된 질문이 없습니다.
+                </div>
+              )}
 
-            {!loadingProfile && cards.length === 0 && !loadErr && (
-              <div className="w-full text-center text-gs-50 my-6">
-                등록된 질문이 없습니다.
-              </div>
-            )}
-            <div ref={loadMoreRef} className="w-full h-8" />
-            {isLoading && (
-              <div className="w-full py-4 text-center text-gs-50">
-                불러오는 중…
-              </div>
-            )}
-          </section>
-        </main>
+              <div ref={loadMoreRef} className="w-full h-8" />
+              {isLoading && (
+                <div className="w-full py-4 text-center text-gs-50">
+                  불러오는 중…
+                </div>
+              )}
+            </section>
+          </main>
+        </div>
       )}
 
       {subjectId && showDeleteModal && (
@@ -299,7 +301,7 @@ export default function AnswerPage() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="deleteProfileTitle"
-            className="relative mx-4 w/full min-w-[420px] rounded-2xl bg-white shadow-lg ring-1 ring-gs-30 p-6"
+            className="relative mx-6 w-full max-w-[420px] rounded-2xl bg-white shadow-lg ring-1 ring-gs-30 p-6"
           >
             <h3
               id="deleteProfileTitle"
@@ -312,10 +314,18 @@ export default function AnswerPage() {
             </p>
 
             {deleteErr && (
-              <p className="mt-3 text-[13px] text-red-600">{deleteErr}</p>
+              <p className="mt-3 text-[13px] text-r50">{deleteErr}</p>
             )}
 
             <div className="mt-6 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={handleConfirmDeleteProfile}
+                disabled={deletingProfile}
+                className="h-11 rounded-lg bg-r50 text-white text-[14px] font-semibold hover:opacity-90"
+              >
+                {deletingProfile ? '삭제 중…' : '삭제하기'}
+              </button>
               <button
                 type="button"
                 onClick={() => setShowDeleteModal(false)}
@@ -323,14 +333,6 @@ export default function AnswerPage() {
                 className="h-11 rounded-lg border border-gs-30 text-[14px] hover:bg-gs-20"
               >
                 취소
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmDeleteProfile}
-                disabled={deletingProfile}
-                className="h-11 rounded-lg bg-red-500 text-white text-[14px] font-semibold hover:opacity-90"
-              >
-                {deletingProfile ? '삭제 중…' : '삭제하기'}
               </button>
             </div>
           </div>
