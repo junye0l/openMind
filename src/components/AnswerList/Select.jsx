@@ -52,7 +52,7 @@ function Select({ handleNew, handleName }) {
         />
       </button>
       {isOpen && (
-        <div className="border rounded-lg mt-1 absolute w-[79px] shadow-[#8C8C8C40] shadow-lg z-10 cursor-pointer bg-gs-10">
+        <div className="border rounded-lg mt-1 absolute w-[79px] shadow-[#8C8C8C] shadow-lg z-10 cursor-pointer bg-gs-10">
           {sortOptions.map(item => {
             return (
               <button

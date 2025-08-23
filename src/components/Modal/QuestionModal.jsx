@@ -197,7 +197,7 @@ export default function QuestionModal({
                 placeholder="질문을 입력해주세요"
                 value={question}
                 onChange={e => setQuestion(e.target.value)}
-                className="min-h-[150px] w-full resize-y rounded-xl border border-gray-200 bg-[#fafafa] p-3 text-sm text-gray-900 outline-blue-600 placeholder:text-gray-400"
+                className="min-h-[150px] w-full resize-y rounded-xl border border-gs-20 bg-gs-20 p-3 text-sm text-gray-900 outline-blue-600 placeholder:text-gs-40"
               />
             </div>
 
@@ -208,8 +208,8 @@ export default function QuestionModal({
                 disabled={!canSend}
                 className={`h-12 w-full rounded-xl font-bold text-white ${
                   canSend
-                    ? 'bg-[#6B4A2D] hover:brightness-110'
-                    : 'cursor-not-allowed bg-[#D6CCC6]'
+                    ? 'bg-bn-40 hover:brightness-110'
+                    : 'cursor-not-allowed bg-bn-30'
                 }`}
               >
                 {loading ? '전송 중...' : '질문 보내기'}
