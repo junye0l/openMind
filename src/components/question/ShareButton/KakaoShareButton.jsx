@@ -4,7 +4,7 @@ import KakaoImg from '../../../assets/images/Kakaotalk.svg?react';
 function KakaoShareButton({ userInfo }) {
   useEffect(() => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init('554658cda2098d6fcf2086e728bf4d7b');
+      window.Kakao.init(import.meta.env.VITE_KEY_KAKAO_JAVASCRIPT);
     }
   }, []);
   const shareClick = () => {
