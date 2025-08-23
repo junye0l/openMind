@@ -47,7 +47,7 @@ function Select({ handleNew, handleName }) {
         className="w-full flex items-center justify-between py-2 px-2 border border-gs-60 rounded-lg cursor-pointer bg-gs-10"
       >
         <div className="text-[14px]">{selectValue}</div>
-        <SelectIcon
+        <SelectIcon aria-label="SelectIcon"
           className={`${isOpen === true ? changeIcon : ''} ${baseIcon}`}
         />
       </button>
