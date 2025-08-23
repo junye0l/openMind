@@ -1,7 +1,7 @@
 import QuestionCounter from './QuestionCounter';
 import QuestionCard from './QuestionCard';
 import EmptyPost from '../../../assets/images/empty_post.svg?react';
-import SkeletonCard from '../../SkeletonUi/SkeletonCard';
+import SkeletonCard from '../../SkeletonUI/SkeletonCard';
 
 function QuestionFeed({ userInfo, questions, loading }) {
   const hasQuestions = questions.length > 0;
