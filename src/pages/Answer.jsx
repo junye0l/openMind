@@ -261,7 +261,7 @@ export default function AnswerPage() {
               </div>
 
               {loadErr && (
-                <div className="w-full text-center text-red-600 text-sm mb-3">
+                <div className="w-full text-center text-r50 text-sm mb-3">
                   {loadErr}
                 </div>
               )}
@@ -325,7 +325,7 @@ export default function AnswerPage() {
             </p>
 
             {deleteErr && (
-              <p className="mt-3 text-[13px] text-red-600">{deleteErr}</p>
+              <p className="mt-3 text-[13px] text-r50">{deleteErr}</p>
             )}
 
             <div className="mt-6 grid grid-cols-2 gap-2">
@@ -333,7 +333,7 @@ export default function AnswerPage() {
                 type="button"
                 onClick={handleConfirmDeleteProfile}
                 disabled={deletingProfile}
-                className="h-11 rounded-lg bg-red-500 text-white text-[14px] font-semibold hover:opacity-90"
+                className="h-11 rounded-lg bg-r50 text-white text-[14px] font-semibold hover:opacity-90"
               >
                 {deletingProfile ? '삭제 중…' : '삭제하기'}
               </button>

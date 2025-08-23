@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import RightArrow from '../../assets/images/Arrow-right.svg?react';
 import LogoImg from '../../assets/images/logo.svg?react';
-import MainBg from '../../assets/images/main_bg.png';
+import MainBg from '../../assets/images/main_bg.webp';
 import UserIcon from '../../assets/images/user_icon.svg?react';
 import { postSubjectsId } from '../../api/postSubjectsId';
 import Button from '../AnswerList/Button';
@@ -73,7 +73,7 @@ const MainComponents = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-6">
         {/* 데스크톱 질문하러 가기 버튼 */}
         <div className="hidden md:block self-end mb-auto pr-8 md:pr-12 lg:pr-16 mt-6 md:mt-8">
-          <Link to="/list">
+          <Link to="/list" aria-label="질문 목록 페이지로 이동">
             <Button className={MainButton}>질문하러 가기</Button>
           </Link>
         </div>
@@ -88,7 +88,7 @@ const MainComponents = () => {
           </motion.header>
 
           {/* 모바일 질문하러 가기 버튼 */}
-          <Link to="/list">
+          <Link to="/list" aria-label="질문 목록 페이지로 이동">
             <Button className={MainMobileButton}>질문하러 가기</Button>
           </Link>
 

@@ -15,7 +15,7 @@ export default function Button({ children, className }) {
       transition={{ duration: 0.2 }}
     >
       {children}
-      <ArrowRight className="size-[18px]" />
+      <ArrowRight aria-label="ArrowRight" className="size-[18px]" />
     </motion.button>
   );
 }
