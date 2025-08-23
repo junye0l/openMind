@@ -46,15 +46,17 @@ function AnswerQuestion() {
     },
     [isLoading, moreNext, loadMoreQuestions]
   );
-
-  if (loading) return <p>사용자 정보를 불러오는 중...</p>;
   if (error) return <p>에러: {error}</p>;
 
   return (
     <div className="w-full bg-gs-20 flex flex-col items-center">
-      <Headers userInfo={userInfo} />
+      <Headers userInfo={userInfo} loading={loading} />
       <div className="w-full flex justify-center max-md:px-[32px] max-sm:px-[24px]">
-        <QuestionFeedList userInfo={userInfo} questions={questionList} />
+        <QuestionFeedList
+          userInfo={userInfo}
+          questions={questionList}
+          loading={isLoading}
+        />
       </div>
       <div ref={observer} />
       <FloatingButton />

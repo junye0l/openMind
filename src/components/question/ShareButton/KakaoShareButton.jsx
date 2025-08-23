@@ -36,7 +36,7 @@ function KakaoShareButton({ userInfo }) {
       className="p-[11px] bg-y50 flex justify-center items-center rounded-full"
       onClick={shareClick}
     >
-      <KakaoImg className="fill-gs-60" />
+      <KakaoImg className="fill-gs-60" aria-label="카카오톡 공유하기 로고" />
     </button>
   );
 }
