@@ -15,11 +15,16 @@ function AnswerQuestion() {
 
   const [showToast, setShowToast] = useState(false);
 
+  // 페이지가 새로고침되어 마운트될 때 토스트 플래그 확인
   useEffect(() => {
-    if (!showToast) return;
-    const t = setTimeout(() => setShowToast(false), 1200);
-    return () => clearTimeout(t);
-  }, [showToast]);
+    const KEY = 'toast:newQuestion';
+    if (sessionStorage.getItem(KEY) === '1') {
+      sessionStorage.removeItem(KEY);
+      setShowToast(true);
+      const t = setTimeout(() => setShowToast(false), 1200);
+      return () => clearTimeout(t);
+    }
+  }, []); // ← 마운트 한 번만 실행
 
   const observerRef = useRef();
 
@@ -55,7 +60,7 @@ function AnswerQuestion() {
       </div>
       <div ref={observer} />
       <FloatingButton />
-      <QuestionModal onSent={() => setShowToast(true)} />
+      <QuestionModal />
 
       {/* 페이지 레벨 토스트 */}
       <AnimatePresence>

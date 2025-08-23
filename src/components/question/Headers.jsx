@@ -1,4 +1,4 @@
-import MainBg from '../../assets/images/main_bg.png';
+import MainBg from '../../assets/images/main_bg.webp';
 import ProfileSection from './ProfileSection';
 
 function Headers({ userInfo, loading }) {
