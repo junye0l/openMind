@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
-import { getSubjects } from '../api/getSubjects';
+import { getSubjects } from '../api/getsubjects';
 import CardList from '../components/AnswerList/CardList';
 import Header from '../components/AnswerList/Header';
 import Pagination from '../components/AnswerList/Pagination';
 import Select from '../components/AnswerList/Select';
 import Title from '../components/AnswerList/Title';
+const mediaSize = window.innerWidth;
 
 export default function AnswerList() {
-  const [order, setOrder] = useState('name');
+  const [order, setOrder] = useState('createdAt');
   const [items, setItems] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPages, setCurrentPages] = useState(1);
@@ -16,7 +17,7 @@ export default function AnswerList() {
 
   useEffect(() => {
     const MediaItems = () => {
-      if (window.innerWidth < 1024) {
+      if (mediaSize < 1024) {
         setLimit(6);
       } else {
         setLimit(8);
@@ -47,7 +48,7 @@ export default function AnswerList() {
 
   const sortedItem = [...items].sort((a, b) => {
     if (order === 'name') {
-      return a.name.localeCompare(b.name, 'ko', { numeric: true })
+      return a.name.localeCompare(b.name, 'ko', { numeric: true });
     } else {
       return b[order] - a[order];
     }
@@ -69,7 +70,7 @@ export default function AnswerList() {
           <Select handleNew={handleNew} handleName={handleName} />
         </div>
         {loading ? <CardList items={sortedItem} /> : <div>로딩중...</div>}
-        
+
         <Pagination
           currentPages={currentPages}
           setCurrentPages={setCurrentPages}

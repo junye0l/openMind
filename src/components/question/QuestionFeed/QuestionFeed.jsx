@@ -6,7 +6,7 @@ function QuestionFeed({ userInfo, questions }) {
   const hasQuestions = questions.length > 0;
 
   return (
-    <section className="max-w-[684px]rounded-[16px] p-[16px] flex flex-col items-center">
+    <section className="max-w-[714px] max-md:max-w-[706px] w-full rounded-[16px] p-[16px] flex flex-col items-center break-anywhere">
       <QuestionCounter userInfo={userInfo} />
       {hasQuestions ? (
         questions.map(question => (

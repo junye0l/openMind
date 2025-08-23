@@ -38,6 +38,10 @@ export default function AnswerPage() {
   const [loading, setLoading] = useState(true);
   const [loadErr, setLoadErr] = useState('');
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingProfile, setDeletingProfile] = useState(false);
+  const [deleteErr, setDeleteErr] = useState('');
+
   useEffect(() => {
     if (!subjectId) {
       setLoading(false);
@@ -87,19 +91,38 @@ export default function AnswerPage() {
     };
   }, [subjectId]);
 
-  const handleDeleteProfile = async () => {
-    if (!subjectId) return;
-    const ok = window.confirm('프로필을 삭제하시겠습니까?');
-    if (!ok) return;
+  useEffect(() => {
+    if (showDeleteModal) {
+      const onKey = e => {
+        if (e.key === 'Escape') setShowDeleteModal(false);
+      };
+      document.addEventListener('keydown', onKey);
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.removeEventListener('keydown', onKey);
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [showDeleteModal]);
+
+  const handleConfirmDeleteProfile = async () => {
+    if (!subjectId || deletingProfile) return;
     try {
+      setDeletingProfile(true);
+      setDeleteErr('');
       await deleteSubjectsId(subjectId);
       localStorage.removeItem('id');
-      alert('프로필이 삭제되었습니다.');
+      setShowDeleteModal(false);
       navigate('/list', { replace: true });
     } catch (e) {
-      alert(apiError(e));
+      setDeleteErr(apiError(e));
+    } finally {
+      setDeletingProfile(false);
     }
   };
+
+  const handleDeleteProfile = () => setShowDeleteModal(true);
 
   const onCreateAnswer = async (questionId, content) => {
     try {
@@ -146,7 +169,6 @@ export default function AnswerPage() {
   return (
     <div className="min-h-screen bg-gs-20 flex flex-col items-center overflow-x-hidden">
       {!subjectId ? (
-        // ✅ 작은 화면 좌우 24px 여백
         <div className="min-h-screen flex items-center justify-center bg-gs-20 w-full px-6">
           <div className="bg-white rounded-xl p-8 shadow text-center w-full max-w-[716px]">
             <p className="text-bn-50 mb-4">프로필을 생성해주세요.</p>
@@ -171,7 +193,6 @@ export default function AnswerPage() {
             }
           />
 
-          {/* 프로필 삭제 버튼 라인: 좌우 24px 여백 */}
           <div className="w-full flex justify-center px-6 md:px-0">
             <div className="w-full max-w-[716px] flex justify-end mt-[172px]">
               <button
@@ -184,10 +205,9 @@ export default function AnswerPage() {
             </div>
           </div>
 
-          {/* 질문 리스트: 바깥 래퍼로 24px 여백, main은 중앙 정렬 */}
+          {/* 바깥 래퍼로 24px 여백 */}
           <div className="w-full px-6 md:px-0">
             <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mx-auto mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center">
-              {/* 내부 넘침 방지(min-w-0) */}
               <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px] min-w-0">
                 <div className="flex items-center justify-center gap-[8px] mb-[16px]">
                   <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
@@ -236,6 +256,55 @@ export default function AnswerPage() {
               </section>
             </main>
           </div>
+
+          {showDeleteModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              {/* 오버레이 */}
+              <div
+                className="absolute inset-0 bg-gs-60/10"
+                onClick={() => !deletingProfile && setShowDeleteModal(false)}
+              />
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="deleteProfileTitle"
+                className="relative mx-6 w-full max-w-[420px] rounded-2xl bg-white shadow-lg ring-1 ring-gs-30 p-6"
+              >
+                <h3
+                  id="deleteProfileTitle"
+                  className="text-[18px] font-semibold text-bn-50"
+                >
+                  프로필을 삭제할까요?
+                </h3>
+                <p className="mt-2 text-[14px] text-gs-50">
+                  모든 질문과 답변이 삭제됩니다.
+                </p>
+
+                {deleteErr && (
+                  <p className="mt-3 text-[13px] text-red-600">{deleteErr}</p>
+                )}
+
+                <div className="mt-6 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteModal(false)}
+                    disabled={deletingProfile}
+                    className="h-11 rounded-lg border border-gs-30 text-[14px] hover:bg-gs-20"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmDeleteProfile}
+                    disabled={deletingProfile}
+                    className="h-11 rounded-lg bg-red-500 text-white text-[14px] font-semibold hover:opacity-90"
+                  >
+                    {deletingProfile ? '삭제 중…' : '삭제하기'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

@@ -30,7 +30,7 @@ export default function AnswerCard({
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
 
-  const isAnswered = !!answer;
+  const isAnswered = answer;
 
   // 답변 이전값 비교하기 (수정버튼 개선)
   const originalContent = (answer?.content ?? '').trim();
@@ -105,7 +105,7 @@ export default function AnswerCard({
             isAnswered ? 'text-bn-40 border-bn-40' : 'text-gs-40 border-gs-40'
           }`}
         >
-          {isAnswered ? '답변 완료' : '미답변'}
+          {isAnswered ? '답변완료' : '미답변'}
         </span>
 
         <div className="ml-auto relative" ref={menuRef}>

@@ -1,4 +1,6 @@
-export default function Pagination({
+import { memo } from 'react';
+
+function Pagination({
   currentPages: currentPages,
   totalPages,
   setCurrentPages,
@@ -71,3 +73,10 @@ export default function Pagination({
     </div>
   );
 }
+
+export default memo(Pagination, (prev, next) => {
+  if (prev.currentPages !== next.currentPages) return false;
+  if (prev.totalPages !== next.totalPages) return false;
+  if (prev.setCurrentPages !== next.setCurrentPages) return false;
+  return true;
+});
