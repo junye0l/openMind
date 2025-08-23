@@ -15,11 +15,16 @@ function AnswerQuestion() {
 
   const [showToast, setShowToast] = useState(false);
 
+  // 페이지가 새로고침되어 마운트될 때 토스트 플래그 확인
   useEffect(() => {
-    if (!showToast) return;
-    const t = setTimeout(() => setShowToast(false), 1200);
-    return () => clearTimeout(t);
-  }, [showToast]);
+    const KEY = 'toast:newQuestion';
+    if (sessionStorage.getItem(KEY) === '1') {
+      sessionStorage.removeItem(KEY);
+      setShowToast(true);
+      const t = setTimeout(() => setShowToast(false), 1200);
+      return () => clearTimeout(t);
+    }
+  }, []); // ← 마운트 한 번만 실행
 
   const observerRef = useRef();
 
@@ -41,19 +46,21 @@ function AnswerQuestion() {
     },
     [isLoading, moreNext, loadMoreQuestions]
   );
-
-  if (loading) return <p>사용자 정보를 불러오는 중...</p>;
   if (error) return <p>에러: {error}</p>;
 
   return (
     <div className="w-full bg-gs-20 flex flex-col items-center">
-      <Headers userInfo={userInfo} />
+      <Headers userInfo={userInfo} loading={loading} />
       <div className="w-full flex justify-center max-md:px-[32px] max-sm:px-[24px]">
-        <QuestionFeedList userInfo={userInfo} questions={questionList} />
+        <QuestionFeedList
+          userInfo={userInfo}
+          questions={questionList}
+          loading={isLoading}
+        />
       </div>
       <div ref={observer} />
       <FloatingButton />
-      <QuestionModal onSent={() => setShowToast(true)} />
+      <QuestionModal />
 
       {/* 페이지 레벨 토스트 */}
       <AnimatePresence>

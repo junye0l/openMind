@@ -5,6 +5,8 @@ function AnswerContent({ userInfo, isAnswer, createdAt }) {
     <div className="flex gap-[12px]">
       <img
         src={userInfo.imageSource}
+        alt="답변자 프로필 이미지"
+        aria-label="답변자 프로필 이미지"
         className="w-[48px] h-[48px] max-sm:w-[32px] max-sm:h-[32px] rounded-full"
       />
       <div className="flex flex-col flex-1 gap-[4px]">

@@ -11,7 +11,7 @@ function FacebookShareButton() {
       className="p-[11px] bg-b50 flex justify-center items-center rounded-full"
       onClick={shareClick}
     >
-      <FacebookImg className="fill-gs-10" />
+      <FacebookImg className="fill-gs-10" aria-label="페이스북 공유하기 로고" />
     </button>
   );
 }

@@ -17,7 +17,7 @@ export default function Card({ item }) {
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <Messages className="size-[13px] fill-gs-40 mr-[5px] md:size-[18px]" />
+          <Messages aria-label="MessageIcon" className="size-[13px] fill-gs-40 mr-[5px] md:size-[18px]" />
           <p className="text-gs-40 text-[14px] md:text-[16px]">받은 질문</p>
         </div>
         <div>

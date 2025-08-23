@@ -109,7 +109,6 @@ export default function AnswerCard({
         </span>
 
         <div className="ml-auto relative" ref={menuRef}>
-          {/* 케밥 버튼 컴포넌트화 시키기 */}
           <button
             type="button"
             aria-haspopup="menu"
@@ -255,7 +254,7 @@ export default function AnswerCard({
                     type="button"
                     onClick={handleDelete}
                     disabled={deleting}
-                    className="w-full h-11 rounded-lg bg-red-500 text-white text-[14px] font-semibold hover:opacity-90"
+                    className="w-full h-11 rounded-lg bg-r50 text-white text-[14px] font-semibold hover:opacity-90"
                   >
                     {deleting ? '삭제 중…' : '답변을 삭제하시겠습니까?'}
                   </button>
@@ -270,7 +269,7 @@ export default function AnswerCard({
               )}
 
               {error && (
-                <div className="mt-3 text-[13px] text-red-600">{error}</div>
+                <div className="mt-3 text-[13px] text-r50">{error}</div>
               )}
             </div>
           </div>
