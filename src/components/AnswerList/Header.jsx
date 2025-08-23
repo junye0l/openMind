@@ -10,7 +10,7 @@ function Header() {
   return (
     <header className="flex flex-col justify-between items-center md:flex-row">
       <Link to="/" className="pb-5 md:pb-0">
-        <LogoImg />
+        <LogoImg aria-label="LogoImg"/>
       </Link>
       <Link to={NaviPath}>
         <Button>답변하러 가기</Button>
