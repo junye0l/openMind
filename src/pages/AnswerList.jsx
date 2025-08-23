@@ -5,7 +5,6 @@ import Header from '../components/AnswerList/Header';
 import Pagination from '../components/AnswerList/Pagination';
 import Select from '../components/AnswerList/Select';
 import Title from '../components/AnswerList/Title';
-const mediaSize = window.innerWidth;
 
 export default function AnswerList() {
   const [order, setOrder] = useState('createdAt');
@@ -15,19 +14,16 @@ export default function AnswerList() {
   const [limit, setLimit] = useState(8);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const MediaItems = () => {
-      if (mediaSize < 1024) {
-        setLimit(6);
-      } else {
-        setLimit(8);
-      }
-    };
+  const MediaItems = () => {
+    const newLimit = window.innerWidth < 1024 ? 6 : 8;
+    setLimit(prev => (prev === newLimit ? prev : newLimit));
+  };
 
+  useEffect(() => {
     MediaItems();
     window.addEventListener('resize', MediaItems);
-    return () => window.addEventListener('resize', MediaItems);
-  }, [limit]);
+    return () => window.removeEventListener('resize', MediaItems);
+  }, []);
 
   useEffect(() => {
     const handleLoad = async () => {
