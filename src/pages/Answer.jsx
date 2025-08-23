@@ -146,8 +146,9 @@ export default function AnswerPage() {
   return (
     <div className="min-h-screen bg-gs-20 flex flex-col items-center overflow-x-hidden">
       {!subjectId ? (
-        <div className="min-h-screen flex items-center justify-center bg-gs-20 w-full">
-          <div className="bg-white rounded-xl p-8 shadow text-center">
+        // ✅ 작은 화면 좌우 24px 여백
+        <div className="min-h-screen flex items-center justify-center bg-gs-20 w-full px-6">
+          <div className="bg-white rounded-xl p-8 shadow text-center w-full max-w-[716px]">
             <p className="text-bn-50 mb-4">프로필을 생성해주세요.</p>
             <button
               type="button"
@@ -170,8 +171,8 @@ export default function AnswerPage() {
             }
           />
 
-          {/* 프로필 삭제 버튼 */}
-          <div className="w-full flex justify-center px-4 md:px-0">
+          {/* 프로필 삭제 버튼 라인: 좌우 24px 여백 */}
+          <div className="w-full flex justify-center px-6 md:px-0">
             <div className="w-full max-w-[716px] flex justify-end mt-[172px]">
               <button
                 type="button"
@@ -183,55 +184,58 @@ export default function AnswerPage() {
             </div>
           </div>
 
-          {/* 질문 리스트 */}
-          <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center px-4 md:px-0">
-            <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px]">
-              <div className="flex items-center justify-center gap-[8px] mb-[16px]">
-                <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
-                {loading ? (
-                  <h2 className="text-[20px] font-[400] text-bn-40">
-                    불러오는 중…
-                  </h2>
-                ) : (
-                  <h2 className="text-[20px] font-[400] text-bn-40">
-                    {cards.length === 0
-                      ? '아직 질문이 없습니다.'
-                      : `${cards.length}개의 질문이 있습니다.`}
-                  </h2>
+          {/* 질문 리스트: 바깥 래퍼로 24px 여백, main은 중앙 정렬 */}
+          <div className="w-full px-6 md:px-0">
+            <main className="border-bn-30 rounded-[16px] w-full max-w-[716px] mx-auto mt-[8px] mb-[136px] bg-bn-10 border border-solid flex flex-col justify-center items-center">
+              {/* 내부 넘침 방지(min-w-0) */}
+              <section className="w-full max-w-[684px] rounded-[16px] p-4 md:p-[16px] min-w-0">
+                <div className="flex items-center justify-center gap-[8px] mb-[16px]">
+                  <MessagesIcon className="fill-bn-40 w-[20px] h-[20px]" />
+                  {loading ? (
+                    <h2 className="text-[20px] font-[400] text-bn-40">
+                      불러오는 중…
+                    </h2>
+                  ) : (
+                    <h2 className="text-[20px] font-[400] text-bn-40">
+                      {cards.length === 0
+                        ? '아직 질문이 없습니다.'
+                        : `${cards.length}개의 질문이 있습니다.`}
+                    </h2>
+                  )}
+                </div>
+
+                {loadErr && (
+                  <div className="w-full text-center text-red-600 text-sm mb-3">
+                    {loadErr}
+                  </div>
                 )}
-              </div>
 
-              {loadErr && (
-                <div className="w-full text-center text-red-600 text-sm mb-3">
-                  {loadErr}
-                </div>
-              )}
+                {!loading &&
+                  cards.map(c => (
+                    <AnswerCard
+                      key={c.questionId}
+                      questionId={c.questionId}
+                      author={userInfo?.name ?? '내 프로필'}
+                      authorImage={userInfo?.imageSource ?? null}
+                      question={c.question}
+                      createdAt={c.createdAt}
+                      answer={c.answer}
+                      like={c.like}
+                      dislike={c.dislike}
+                      onCreate={onCreateAnswer}
+                      onEdit={onEditAnswer}
+                      onDelete={onDeleteAnswer}
+                    />
+                  ))}
 
-              {!loading &&
-                cards.map(c => (
-                  <AnswerCard
-                    key={c.questionId}
-                    questionId={c.questionId}
-                    author={userInfo?.name ?? '내 프로필'}
-                    authorImage={userInfo?.imageSource ?? null}
-                    question={c.question}
-                    createdAt={c.createdAt}
-                    answer={c.answer}
-                    like={c.like}
-                    dislike={c.dislike}
-                    onCreate={onCreateAnswer}
-                    onEdit={onEditAnswer}
-                    onDelete={onDeleteAnswer}
-                  />
-                ))}
-
-              {!loading && cards.length === 0 && !loadErr && (
-                <div className="w-full text-center text-gs-50 my-6">
-                  등록된 질문이 없습니다.
-                </div>
-              )}
-            </section>
-          </main>
+                {!loading && cards.length === 0 && !loadErr && (
+                  <div className="w-full text-center text-gs-50 my-6">
+                    등록된 질문이 없습니다.
+                  </div>
+                )}
+              </section>
+            </main>
+          </div>
         </>
       )}
     </div>
