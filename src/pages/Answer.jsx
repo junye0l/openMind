@@ -259,7 +259,6 @@ export default function AnswerPage() {
 
           {showDeleteModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center">
-              {/* 오버레이 */}
               <div
                 className="absolute inset-0 bg-gs-60/10"
                 onClick={() => !deletingProfile && setShowDeleteModal(false)}
