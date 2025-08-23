@@ -3,7 +3,7 @@ import Logo from '../../assets/images/logo.svg?react';
 import FacebookShareButton from './ShareButton/FacebookShareButton';
 import KakaoShareButton from './ShareButton/KakaoShareButton';
 import CopyUrlButton from './ShareButton/CopyUrlButton';
-import SkeletonProfile from '../SkeletonUi/SkeletonProfile';
+import SkeletonProfile from '../SkeletonUI/SkeletonProfile';
 
 function ProfileSection({ userInfo, loading }) {
   return (
