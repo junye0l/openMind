@@ -4,7 +4,7 @@ import KakaoImg from '../../../assets/images/Kakaotalk.svg?react';
 function KakaoShareButton({ userInfo }) {
   useEffect(() => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init(import.meta.env.VITE_KEY_KAKAO_JAVASCRIPT);
+      window.Kakao.init('554658cda2098d6fcf2086e728bf4d7b');
     }
   }, []);
   const shareClick = () => {
@@ -13,10 +13,10 @@ function KakaoShareButton({ userInfo }) {
       content: {
         title: 'Open Mind',
         description: `${userInfo.name}님의 궁금한 것을 질문해보세요!`,
-        imageUrl: 'https://i.imgur.com/FaZS4np.png',
+        imageUrl: 'https://openm.netlify.app/Thumbnail.png',
         link: {
-          webUrl: window.location.href,
-          mobileWebUrl: window.location.href,
+          webUrl: 'https://openm.netlify.app/',
+          mobileWebUrl: 'https://openm.netlify.app/',
         },
       },
       buttons: [
