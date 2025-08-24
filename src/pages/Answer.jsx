@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSubjectsId } from '../api/getSubjectsId';
-import { deleteSubjectsId } from '../api/deleteSubjectsId';
+
+import { getSubjectsId } from '../api/getSubjectsId'; //프로필 정보 (이름, 사진, 질문)
+import { deleteSubjectsId } from '../api/deleteSubjectsId'; //프로필 삭제하기 누르면 얘를 지움
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
+// 질문삭제 api 추가 DELETE /questions/{questionId}, api 엔드포인트
+import { deleteQuestion as deleteQuestionApi } from '../api/getQuestion';
+
 import Headers from '../components/question/Headers';
+import useInfiniteScroll from '../hook/useInfiniteScroll';
 import AnswerCard from '../components/Answer/AnswerCard';
 import MessagesIcon from '../assets/images/Messages.svg?react';
-import useInfiniteScroll from '../hook/useInfiniteScroll';
 
 const apiError = e =>
   e?.response?.data?.detail ||
@@ -32,7 +36,7 @@ export default function AnswerPage() {
   const navigate = useNavigate();
   const subjectId =
     typeof window !== 'undefined' ? localStorage.getItem('id') : null;
-
+  const [liveTotal, setLiveTotal] = useState(null); //질문 삭제하면 실시간으로 질문개수 반영
   const [userInfo, setUserInfo] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [loadErr, setLoadErr] = useState('');
@@ -48,7 +52,17 @@ export default function AnswerPage() {
 
   const loadMoreRef = useRef(null);
 
-  // 프로필(질문 총 개수 포함) 불러오기
+  //질문 카운트 동기화시키기
+  useEffect(() => {
+    const serverTotal =
+      (typeof totalCount === 'number' ? totalCount : null) ??
+      (typeof userInfo?.questionCount === 'number'
+        ? userInfo.questionCount
+        : null);
+    if (serverTotal !== null) setLiveTotal(serverTotal);
+  }, [totalCount, userInfo?.questionCount]);
+
+  //메인에서 생성한 프로필 + 질문정보 가져오기
   useEffect(() => {
     if (!subjectId) {
       setLoadingProfile(false);
@@ -101,6 +115,7 @@ export default function AnswerPage() {
   const [deletingProfile, setDeletingProfile] = useState(false);
   const [deleteErr, setDeleteErr] = useState('');
 
+  //삭제 모달, overflow를 히든으로 삭제모달 띄웠을 때 스크롤 막기
   useEffect(() => {
     if (!showDeleteModal) return;
     const onKey = e => {
@@ -120,7 +135,7 @@ export default function AnswerPage() {
     try {
       setDeletingProfile(true);
       setDeleteErr('');
-      await deleteSubjectsId(subjectId);
+      await deleteSubjectsId(subjectId); //프로필정보, 질문, 답변 싸그리 지움
       localStorage.removeItem('id');
       setShowDeleteModal(false);
       navigate('/list', { replace: true });
@@ -131,6 +146,7 @@ export default function AnswerPage() {
     }
   };
 
+  // 답변 생성
   const onCreateAnswer = async (questionId, content) => {
     try {
       const created = await createAnswer(questionId, {
@@ -148,6 +164,7 @@ export default function AnswerPage() {
     }
   };
 
+  // 답변 수정
   const onEditAnswer = async (answerId, content) => {
     try {
       const updated = await patchAnswer(answerId, { content });
@@ -162,6 +179,7 @@ export default function AnswerPage() {
     }
   };
 
+  // 답변 삭제, answer-> null로 저장
   const onDeleteAnswer = async answerId => {
     try {
       await deleteAnswer(answerId);
@@ -169,6 +187,19 @@ export default function AnswerPage() {
         prev.map(item =>
           item.answer?.id === answerId ? { ...item, answer: null } : item
         )
+      );
+    } catch (e) {
+      throw new Error(apiError(e));
+    }
+  };
+
+  // api 엔드포인트에 질문삭제 요청보내고 질문리스트에서 카드 없애버리기, 질문이 지워지면 질문개수 -1
+  const onDeleteQuestion = async questionId => {
+    try {
+      await deleteQuestionApi(questionId);
+      setQuestionList(prev => prev.filter(item => item.id !== questionId));
+      setLiveTotal(prev =>
+        typeof prev === 'number' ? Math.max(0, prev - 1) : prev
       );
     } catch (e) {
       throw new Error(apiError(e));
@@ -189,8 +220,9 @@ export default function AnswerPage() {
     };
   });
 
-  // 총 질문 개수: 리스트 totalCount → 프로필 questionCount → 로컬 렌더 개수
+  // 총 질문 개수 우선순위  1. 리스트 totalCount  2. 프로필 questionCount 3. 로컬 렌더 개수
   const totalQuestions =
+    (typeof liveTotal === 'number' ? liveTotal : null) ??
     (typeof totalCount === 'number' ? totalCount : null) ??
     (typeof userInfo?.questionCount === 'number'
       ? userInfo.questionCount
@@ -281,7 +313,8 @@ export default function AnswerPage() {
                     dislike={c.dislike}
                     onCreate={onCreateAnswer}
                     onEdit={onEditAnswer}
-                    onDelete={onDeleteAnswer}
+                    onDelete={onDeleteAnswer} //답변 삭제
+                    onDeleteQuestion={onDeleteQuestion} //질문 삭제
                   />
                 ))}
 
