@@ -1,11 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// API
 import { getSubjectsId } from '../api/getSubjectsId';
 import { deleteSubjectsId } from '../api/deleteSubjectsId';
 import { createAnswer, deleteAnswer, patchAnswer } from '../api/answers';
+import { deleteQuestion as deleteQuestionApi } from '../api/getQuestion'; // ✅ DELETE /questions/{questionId}/
+
+// 컴포넌트
 import Headers from '../components/question/Headers';
 import AnswerCard from '../components/Answer/AnswerCard';
 import MessagesIcon from '../assets/images/Messages.svg?react';
+
+// 훅
 import useInfiniteScroll from '../hook/useInfiniteScroll';
 
 const apiError = e =>
@@ -131,6 +138,7 @@ export default function AnswerPage() {
     }
   };
 
+  // 답변 생성
   const onCreateAnswer = async (questionId, content) => {
     try {
       const created = await createAnswer(questionId, {
@@ -148,6 +156,7 @@ export default function AnswerPage() {
     }
   };
 
+  // 답변 수정
   const onEditAnswer = async (answerId, content) => {
     try {
       const updated = await patchAnswer(answerId, { content });
@@ -162,6 +171,7 @@ export default function AnswerPage() {
     }
   };
 
+  // 답변 삭제(선택적으로 유지)
   const onDeleteAnswer = async answerId => {
     try {
       await deleteAnswer(answerId);
@@ -170,6 +180,16 @@ export default function AnswerPage() {
           item.answer?.id === answerId ? { ...item, answer: null } : item
         )
       );
+    } catch (e) {
+      throw new Error(apiError(e));
+    }
+  };
+
+  // ✅ 질문 삭제: DELETE /questions/{questionId}/
+  const onDeleteQuestion = async questionId => {
+    try {
+      await deleteQuestionApi(questionId);
+      setQuestionList(prev => prev.filter(item => item.id !== questionId));
     } catch (e) {
       throw new Error(apiError(e));
     }
@@ -281,7 +301,8 @@ export default function AnswerPage() {
                     dislike={c.dislike}
                     onCreate={onCreateAnswer}
                     onEdit={onEditAnswer}
-                    onDelete={onDeleteAnswer}
+                    onDelete={onDeleteAnswer} // (선택) 답변 삭제 유지
+                    onDeleteQuestion={onDeleteQuestion} // ✅ 질문 삭제 콜백 전달
                   />
                 ))}
 

@@ -17,9 +17,10 @@ export default function AnswerCard({
   dislike = 0,
   onCreate,
   onEdit,
-  onDelete,
+  onDelete, // (선택) 답변 삭제 계속 쓰면 유지
+  onDeleteQuestion, // ✅ 질문 삭제 콜백(부모에서 전달)
 }) {
-  const [mode, setMode] = useState('idle');
+  const [mode, setMode] = useState('idle'); // 'idle' | 'editing' | 'confirm-delete'
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -30,18 +31,20 @@ export default function AnswerCard({
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
 
-  const isAnswered = answer;
+  const isAnswered = !!answer;
 
-  // 답변 이전값 비교하기 (수정버튼 개선)
+  // 수정 UX 보조
   const originalContent = (answer?.content ?? '').trim();
   const editedContent = editText.trim();
   const isEditedChanged = editedContent !== originalContent;
   const canSubmitEdit = isEditedChanged && editedContent.length > 0 && !editing;
 
+  // 답변 있을 때 편집창 동기화
   useEffect(() => {
-    if (isAnswered) setEditText(answer.content ?? '');
+    if (isAnswered) setEditText(answer?.content ?? '');
   }, [isAnswered, answer?.content]);
 
+  // 메뉴 외부 클릭 닫기
   useEffect(() => {
     const onClickOutside = e => {
       if (!menuRef.current) return;
@@ -51,6 +54,7 @@ export default function AnswerCard({
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, [menuOpen]);
 
+  // 답변 생성
   const handleCreate = async () => {
     if (!text.trim()) return;
     try {
@@ -65,6 +69,7 @@ export default function AnswerCard({
     }
   };
 
+  // 답변 수정
   const handlePatch = async () => {
     if (!editText.trim() || !answer?.id) return;
     if (!isEditedChanged) {
@@ -83,15 +88,16 @@ export default function AnswerCard({
     }
   };
 
-  const handleDelete = async () => {
-    if (!answer?.id) return;
+  // ✅ 질문 삭제
+  const handleDeleteQuestion = async () => {
+    if (!questionId || !onDeleteQuestion) return;
     try {
       setDeleting(true);
       setError('');
-      await onDelete(answer.id);
+      await onDeleteQuestion(questionId); // 부모에서 서버 호출 + 리스트 제거
       setMode('idle');
     } catch (e) {
-      setError(e?.message || '삭제 중 오류가 발생했습니다.');
+      setError(e?.message || '질문 삭제 중 오류가 발생했습니다.');
     } finally {
       setDeleting(false);
     }
@@ -99,6 +105,7 @@ export default function AnswerCard({
 
   return (
     <article className="bg-gs-10 w-full max-w-[652px] rounded-[16px] p-8 md:p-[32px] mt-[20px] flex flex-col items-start gap-[24px]">
+      {/* 상단: 상태 배지 + 케밥 메뉴 */}
       <div className="w-full flex items-center">
         <span
           className={`px-[12px] py-[4px] text-[14px] font-medium border border-solid rounded-[8px] ${
@@ -128,6 +135,7 @@ export default function AnswerCard({
               aria-label="카드 메뉴"
               className="absolute right-0 top-8 w-[140px] rounded-md bg-white shadow-md ring-1 ring-gs-30 p-1 z-20 flex flex-col"
             >
+              {/* 답변 수정(답변 있을 때만) */}
               <button
                 type="button"
                 role="menuitem"
@@ -143,31 +151,31 @@ export default function AnswerCard({
                 수정하기
               </button>
 
+              {/* ✅ 질문 삭제(답변 유무와 무관하게 허용) */}
               <button
                 type="button"
                 role="menuitem"
                 onClick={() => {
-                  if (!isAnswered) return;
                   setMode('confirm-delete');
                   setMenuOpen(false);
                 }}
                 className="group flex items-center gap-2 h-[34px] w-full rounded-[6px] px-2 text-[13px] text-gs-50 hover:bg-gs-20 hover:text-bn-50"
               >
                 <CloseIcon className="w-4 h-4" aria-hidden />
-                답변삭제
+                질문삭제
               </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* 질문 */}
+      {/* 질문 본문 */}
       <div className="flex flex-col gap-[4px]">
         <p className="text-[14px] font-medium text-gs-40">질문 · {createdAt}</p>
         <p className="text-[18px] font-normal break-anywhere">{question}</p>
       </div>
 
-      {/* 답변 입력 */}
+      {/* 답변 입력/표시 + 액션 */}
       <div className="w-full">
         <div className="flex gap-[12px]">
           {authorImage ? (
@@ -182,6 +190,7 @@ export default function AnswerCard({
           <div className="flex-1 flex flex-col gap-[8px] min-w-0">
             <p className="text-[18px] font-normal">{author}</p>
 
+            {/* 미답변 + 편집 모드 아님 → 새 답변 입력 */}
             {!isAnswered && mode !== 'editing' && (
               <textarea
                 value={text}
@@ -191,12 +200,14 @@ export default function AnswerCard({
               />
             )}
 
+            {/* 답변 있음 + 편집 모드 아님 → 읽기 표시 */}
             {isAnswered && mode !== 'editing' && (
               <div className="text-[16px] whitespace-pre-wrap break-anywhere">
                 {answer.content}
               </div>
             )}
 
+            {/* 편집 모드 → 수정 입력 */}
             {mode === 'editing' && (
               <textarea
                 value={editText}
@@ -206,7 +217,9 @@ export default function AnswerCard({
               />
             )}
 
+            {/* 액션 버튼 영역 */}
             <div className="mt-[16px] w-full">
+              {/* 답변 생성 */}
               {!isAnswered &&
                 mode !== 'editing' &&
                 mode !== 'confirm-delete' && (
@@ -224,6 +237,7 @@ export default function AnswerCard({
                   </button>
                 )}
 
+              {/* 답변 수정 */}
               {mode === 'editing' && (
                 <div className="w-full flex flex-col gap-2">
                   <button
@@ -248,15 +262,16 @@ export default function AnswerCard({
                 </div>
               )}
 
+              {/* ✅ 질문 삭제 확인 */}
               {mode === 'confirm-delete' && (
                 <div className="w-full flex flex-col gap-2">
                   <button
                     type="button"
-                    onClick={handleDelete}
+                    onClick={handleDeleteQuestion}
                     disabled={deleting}
                     className="w-full h-11 rounded-lg bg-r50 text-white text-[14px] font-semibold hover:opacity-90"
                   >
-                    {deleting ? '삭제 중…' : '답변을 삭제하시겠습니까?'}
+                    {deleting ? '삭제 중…' : '질문을 삭제하시겠습니까?'}
                   </button>
                   <button
                     type="button"
@@ -275,6 +290,7 @@ export default function AnswerCard({
           </div>
         </div>
 
+        {/* 좋아요/싫어요 표기(읽기 전용) */}
         <LikeButtonViewOnly
           questionId={questionId}
           like={like}
